@@ -51,7 +51,7 @@ function JobContents (props) {
           <React.Fragment>
             {props.state.data.result.map((v) => (
               <div className='list-group-item'>
-              <Row className='row col-md-12' key={v.id}>
+              <Row key={v.id} className='row col-md-12' >
                 <div className='col-md-3'><img onClick={()=>this.goToDetail(v.id)} src={v.company_logo} alt='Company Logo' style={{display:'block', maxWidth: '110px'}}/></div>
                 <div className='col-md-9'>
                   <p style={{fontWeight: 'bold'}}>{v.name}</p> 

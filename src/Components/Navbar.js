@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import {BrowserRouter,Link} from 'react-router-dom'
+import '../App.css'
+
 import {
   Collapse,
   Navbar,
@@ -17,22 +20,27 @@ const Example = (props) => {
 
   const toggle = () => setIsOpen(!isOpen);
 
+  const navLinkStyle = {
+    color: 'white',
+    textDecoration: 'none'
+  }
+
   return (
     <div>
-      <Navbar style={{backgroundColor: '#004080', }} light expand="md">
-        <NavbarBrand href="/">JobHunt</NavbarBrand>
+      <Navbar style={{backgroundColor: '#0275d8', }} light expand="md">
+        <Link to='/' className='nav-bar-brand' style={navLinkStyle}>JobHunt</Link>
         <NavbarToggler onClick={toggle} />
         <Collapse isOpen={isOpen} navbar>
           <Nav className="ml-auto" navbar>
             <NavItem>
-              <NavLink href="/components/">Components</NavLink>
+              <NavLink href="#" style={navLinkStyle}>Components</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="#">Login</NavLink>
+              <Link to='/login' className='nav-link'  style={navLinkStyle}>Login</Link>
             </NavItem>
             <UncontrolledDropdown nav inNavbar>
-              <DropdownToggle nav caret>
-                Options
+              <DropdownToggle nav caret style={navLinkStyle}>
+                {props.user!=='' ? props.user : 'user'}
               </DropdownToggle>
               <DropdownMenu right>
                 <DropdownItem>

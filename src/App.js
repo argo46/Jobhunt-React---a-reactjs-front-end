@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import JobContents from './Components/JobContents'
+import {BrowserRouter,Route,Switch, Redirect} from 'react-router-dom'
+
 import Navbar from './Components/Navbar'
+import JobContents from './Components/JobContents'
+import Login from './Components/Login'
+
 const queryString = require('querystring')
 
-// import qs from 'qs'
 export default class App extends Component {
   constructor(props) {
     super(props)
@@ -13,6 +16,8 @@ export default class App extends Component {
       next:'',
       prev:'',
       logo:'',
+      user: '',
+      token: '',
       query:{qname:'', qcompany:'', orderby:''},
       isLoading: true,
       page:'http://localhost:3000/job/jobs/?'
@@ -102,18 +107,52 @@ export default class App extends Component {
       })
   }
 
+  onSubmit = (event) => {
+    event.preventDefault();
+    console.log(event.target.email.value)
+    console.log(event.target.password.value)
+    const dataLogin = {
+      email: event.target.email.value,
+      password: event.target.password.value
+    }
+
+    this.login(dataLogin)
+      .then(data => {
+        this.setState({token: data.token, user: data.result.name, redirect: true})
+        console.log(data)
+        console.log(this.props)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
+  login = async (dataLogin) => {
+    const user = await axios.post('http://localhost:3000/user/login', dataLogin ,{'Content-Type': 'application/x-www-form-urlencoded'})
+    return user.data
+  }
+
   render() {
+    console.log('RENDER')
     return (
       <div>
-        <Navbar />
-        <JobContents 
-          state={this.state} 
-          buttonPress={this.buttonPress} 
-          doSearch={this.doSearch}
-          onChangeName={this.onChangeName}
-          onChangeCompany={this.onChangeCompany}
-          sortBy={this.sortBy}> 
-        </JobContents>
+        <BrowserRouter>
+          <Navbar user={this.state.user}/>
+          <Switch>
+            <Route path='/' exact 
+              component={() => <JobContents state={this.state} 
+                                  buttonPress={this.buttonPress} 
+                                  doSearch={this.doSearch}
+                                  onChangeName={this.onChangeName}
+                                  onChangeCompany={this.onChangeCompany}
+                                  sortBy={this.sortBy}/>} />
+              <Route path='/login'> {this.state.user !=='' ? <Redirect to="/" /> : <Login 
+                                  onSubmit={this.onSubmit}/>}</Route>
+            
+          </Switch>
+          
+        </BrowserRouter>
+        
       </div>
       
     )
