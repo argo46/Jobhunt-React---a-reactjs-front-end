@@ -22,7 +22,7 @@ const Example = (props) => {
     color: 'white',
     textDecoration: 'none'
   }
-
+  
   return (
     <div>
       <Navbar style={{backgroundColor: '#0275d8', }} light expand="md">
@@ -42,10 +42,13 @@ const Example = (props) => {
               </DropdownToggle>
               <DropdownMenu right>
                 <DropdownItem>
-                <Link to='/add-job' style={{textDecoration: 'none'}}>Tambahkan Pekerjaan</Link>
+                <Link to='/add-job/new' style={{textDecoration: 'none'}}>Add Job</Link>
                 </DropdownItem>
                 <DropdownItem>
-                <Link to='#' style={{textDecoration: 'none'}}>Tambahkan Perusahaan</Link>
+                <Link style={{textDecoration: 'none'}} onClick={props.toogleIsEdit}>Edit Job</Link>
+                </DropdownItem>
+                <DropdownItem>
+                <Link to='#' style={{textDecoration: 'none'}}>Add Company</Link>
                 </DropdownItem>
                 <DropdownItem divider />
                 <DropdownItem>

@@ -3,7 +3,7 @@ import {Redirect} from 'react-router-dom'
 import axios from 'axios'
 import qs from 'qs'
 
-import AddJobComponent from '../Components/AddJobComponent'
+import UpdateJobComponent from '../Components/UpdateJobComponent'
 
 export default class AddJob extends Component {
   constructor(props){
@@ -12,7 +12,8 @@ export default class AddJob extends Component {
       user:'',
       jobData:{},
       token:'',
-      isLoading:'true'
+      isLoading:'true',
+      categoriesOption:[]
     }
   }
 
@@ -29,22 +30,55 @@ export default class AddJob extends Component {
    }
     console.log(dataRegister)
 
-    this.addJob(dataRegister)
+    this.updateJob(dataRegister)
       .then(data => {
-        //TODO show confirmation dialog
-        console.log(data)
+          console.log(data)
       })
       .catch(err => {
+        console.log(err)
+    })    
+  }
+
+  componentWillMount () {
+    this.getSingleJobData(this.props.match.params.id)
+    .then(data => {
+      this.setState({jobData: data[0]})
+      console.log(data[0])
+    })
+    .catch(err => {
+      console.log(err)
+    }) 
+
+    this.getAllCategories()
+      .then(data => {
+        this.setState({categoriesOption: data})
+      })
+      .catch(err=> {
         console.log(err)
       })
   }
 
-  addJob = async (dataRegister) => {
-    const token = await localStorage.getItem('token')
-    // const user = await axios.post('http://localhost:3000/job', dataRegister, {headers: {'Content-Type': 'application/x-www-form-urlencoded', 'Authorization':token}})
+  getAllCategories = async () => {
     const user = await axios({
-      method:'POST',
-      url:'http://localhost:3000/job',
+      method:'GET',
+      url:'http://localhost:3000/category/',
+    })
+    return user.data
+  }
+
+  getSingleJobData = async (id) => {
+    const user = await axios({
+      method:'GET',
+      url:'http://localhost:3000/job/id/' + id,
+    })
+    return user.data
+  }
+
+  updateJob = async (dataRegister) => {
+    const token = await localStorage.getItem('token')
+    const user = await axios({
+      method:'PATCH',
+      url:'http://localhost:3000/job/' + this.props.match.params.id,
       data:qs.stringify(dataRegister),
       headers:{
         'content-type': 'application/x-www-form-urlencoded',
@@ -54,12 +88,15 @@ export default class AddJob extends Component {
     return user.data
   }
 
-  render(){
+
+  render() {
     
     return(
       // this.state.user !=='' ? <Redirect to="/" /> : <LoginComponent 
       //                             onSubmit={this.onSubmit}/>  
-      <AddJobComponent submitJob={this.submitJob}/>
+      <UpdateJobComponent submitJob={this.submitJob}
+                      jobData={this.state.jobData}
+                      categoriesOption={this.state.categoriesOption}/>
       //TODO redirect to detail job after 
     )
   }

@@ -7,6 +7,7 @@ import JobContents from './Components/JobContents'
 import Login from './Pages/Login'
 import Register from './Pages/Register'
 import AddJob from './Pages/AddJob'
+import updateJob from './Pages/UpdateJob'
 
 const queryString = require('querystring')
 
@@ -20,6 +21,7 @@ export default class App extends Component {
       logo:'',
       user: '',
       token: '',
+      isEdit: false,
       query:{qname:'', qcompany:'', orderby:''},
       isLoading: true,
       page:'http://localhost:3000/job/jobs/?'
@@ -128,12 +130,18 @@ export default class App extends Component {
     this.setState({user: user})
   }
 
+  toogleIsEdit = () => {
+    const isEditvalue = !(this.state.isEdit)
+    this.setState ({isEdit: isEditvalue})
+  }
+
   render() {
     return (
       <div>
         <BrowserRouter>
           <Navbar user={this.state.user}
-                  logout={this.logout}/>
+                  logout={this.logout}
+                  toogleIsEdit={this.toogleIsEdit}/>
           <Switch>
             <Route path='/' exact 
               component={() => <JobContents state={this.state} 
@@ -145,6 +153,7 @@ export default class App extends Component {
               <Route path='/login' component={() => <Login setUserState={this.setUserState}/>}/>
               <Route path='/register' component={() => <Register setUserState={this.setUserState}/>}/>
               <Route path='/add-job' component={AddJob}/>
+              <Route path='/update-job/:id' component={updateJob}/>
             
           </Switch>
           

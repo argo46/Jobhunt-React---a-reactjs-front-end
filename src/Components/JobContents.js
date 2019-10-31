@@ -3,11 +3,20 @@ import {Row, Col, Container,
   Button, Input, InputGroup, 
   InputGroupAddon, Dropdown, 
   DropdownToggle, DropdownItem, DropdownMenu} from 'reactstrap'
+import {Link} from 'react-router-dom'
 
 function JobContents (props) {
 
   const [isOpen, setIsOpen] = useState(false)
   const toggle = () => setIsOpen(!isOpen)
+
+  let editButtonStyle = {
+    position: 'absolute',
+    top:'10px',
+    right:'10px',
+    fontSize:'0.5rem',
+    // display: 'none'
+  }
 
   return (
     <Row><Col className="d-flex justify-content-center">
@@ -57,6 +66,9 @@ function JobContents (props) {
           <React.Fragment>
             {props.state.data.result.map((v) => (
               <div key={v.id} className='list-group-item'>
+              {
+                props.state.user !== 'user' && props.state.isEdit ? <Link to={'/update-job/'+v.id}><Button color='primary' style={editButtonStyle}>EDIT</Button></Link> : <Button color='primary' style={{display:'none'}}>edit</Button>
+              }
               <Row className='row col-md-12'>
                 <div className='col-md-3'><img onClick={()=>this.goToDetail(v.id)} src={v.company_logo} alt='Company Logo' style={{display:'block', maxWidth: '110px'}}/></div>
                 <div className='col-md-9'>

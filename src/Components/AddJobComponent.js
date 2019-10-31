@@ -2,7 +2,9 @@ import React from 'react'
 import {Form, FormGroup, Label, Input, Button, Card} from 'reactstrap'
 
 
+
 function AddJobComponent (props) {
+
   return (
     <Card style={{width: '100%', maxWidth: '700px', padding: '15px', margin: 'auto'}}>
       <Form onSubmit={props.submitJob} >
