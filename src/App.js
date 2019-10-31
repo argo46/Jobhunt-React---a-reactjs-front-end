@@ -7,7 +7,8 @@ import JobContents from './Components/JobContents'
 import Login from './Pages/Login'
 import Register from './Pages/Register'
 import AddJob from './Pages/AddJob'
-import updateJob from './Pages/UpdateJob'
+import UpdateJob from './Pages/UpdateJob'
+import Company from './Pages/Company'
 
 const queryString = require('querystring')
 
@@ -60,9 +61,9 @@ export default class App extends Component {
   }
   buttonPress = async (url) => {
     this.setState({isLoading:true})
-    console.log(`url btn ${url}`)
     this.getData(url)
     .then(data => {
+      console.log(data)
       this.setState({data,
                     next:data.next_page,
                     prev:data.prev_page,
@@ -85,6 +86,7 @@ export default class App extends Component {
   doSearch = async () => {
     this.getData()
       .then(data => {
+        console.log(data)
         this.setState({data,
                       next:data.next_page,
                       prev:data.prev_page,
@@ -135,6 +137,29 @@ export default class App extends Component {
     this.setState ({isEdit: isEditvalue})
   }
 
+  deleteJob = (id) => {
+    this.deleteJobRequest(id)
+    .then(data => {
+      console.log(data)
+    })
+    .catch(err => {
+      console.log(err)
+    }) 
+  }
+
+  deleteJobRequest = async (id) => {
+    const token = await localStorage.getItem('token')
+    const response = await axios({
+      method:'DELETE',
+      url:'http://localhost:3000/job/' + id,
+      headers:{
+        'content-type': 'application/x-www-form-urlencoded',
+        'authorization': 'Bearer '+ String(token)
+      }
+    })
+    return response.data
+  }
+
   render() {
     return (
       <div>
@@ -145,6 +170,7 @@ export default class App extends Component {
           <Switch>
             <Route path='/' exact 
               component={() => <JobContents state={this.state} 
+                                  deleteJob={this.deleteJob}
                                   buttonPress={this.buttonPress} 
                                   doSearch={this.doSearch}
                                   onChangeName={this.onChangeName}
@@ -153,7 +179,8 @@ export default class App extends Component {
               <Route path='/login' component={() => <Login setUserState={this.setUserState}/>}/>
               <Route path='/register' component={() => <Register setUserState={this.setUserState}/>}/>
               <Route path='/add-job' component={AddJob}/>
-              <Route path='/update-job/:id' component={updateJob}/>
+              <Route path='/update-job/:id' component={UpdateJob}/>
+              <Route path='/company' component={Company} />
             
           </Switch>
           

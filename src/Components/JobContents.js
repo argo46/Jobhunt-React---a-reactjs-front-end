@@ -18,6 +18,14 @@ function JobContents (props) {
     // display: 'none'
   }
 
+  let deleteButtonStyle = {
+    position: 'absolute',
+    top:'40px',
+    right:'10px',
+    fontSize:'0.3rem',
+    // display: 'none'
+  }
+
   return (
     <Row><Col className="d-flex justify-content-center">
     <Container style={{margin:'1rem', maxWidth: '700px'}}>
@@ -66,11 +74,22 @@ function JobContents (props) {
           <React.Fragment>
             {props.state.data.result.map((v) => (
               <div key={v.id} className='list-group-item'>
+              <Row>
               {
-                props.state.user !== 'user' && props.state.isEdit ? <Link to={'/update-job/'+v.id}><Button color='primary' style={editButtonStyle}>EDIT</Button></Link> : <Button color='primary' style={{display:'none'}}>edit</Button>
+                props.state.user !== 'user' && props.state.isEdit ? 
+                <Link to={'/update-job/'+v.id}><Button color='primary' style={editButtonStyle}>EDIT</Button></Link> : 
+                <Button style={{display:'none'}}>edit</Button>
               }
+              </Row>
+              <Row>
+              {
+                props.state.user !== 'user' && props.state.isEdit ? 
+                <Button color='danger' style={deleteButtonStyle} onClick={()=>{props.deleteJob(v.id)}}>DELETE</Button>: 
+                <Button style={{display:'none'}}>DELETE</Button>
+              }
+              </Row>
               <Row className='row col-md-12'>
-                <div className='col-md-3'><img onClick={()=>this.goToDetail(v.id)} src={v.company_logo} alt='Company Logo' style={{display:'block', maxWidth: '110px'}}/></div>
+                <div className='col-md-3'><img src={v.company_logo} alt='Company Logo' style={{display:'block', maxWidth: '110px'}}/></div>
                 <div className='col-md-9'>
                   <p style={{fontWeight: 'bold'}}>{v.name}</p> 
                   <p>{v.location} | {v.category}</p>

@@ -31,6 +31,9 @@ const Example = (props) => {
         <Collapse isOpen={isOpen} navbar>
           <Nav className="ml-auto" navbar>
             <NavItem>
+            <Link to='/' className='nav-link'  style={navLinkStyle}>Jobs</Link>
+            </NavItem>
+            <NavItem>
             <Link to='/register' className='nav-link'  style={navLinkStyle}>Register</Link>
             </NavItem>
             <NavItem>
@@ -47,8 +50,9 @@ const Example = (props) => {
                 <DropdownItem>
                 <Link style={{textDecoration: 'none'}} onClick={props.toogleIsEdit}>Edit Job</Link>
                 </DropdownItem>
+                <DropdownItem divider />
                 <DropdownItem>
-                <Link to='#' style={{textDecoration: 'none'}}>Add Company</Link>
+                <Link to='/company' style={{textDecoration: 'none'}}>Company</Link>
                 </DropdownItem>
                 <DropdownItem divider />
                 <DropdownItem>
