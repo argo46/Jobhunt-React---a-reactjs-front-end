@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom'
 import '../App.css'
 
 import {
+  Button,
   Collapse,
   Navbar,
   NavbarToggler,
@@ -30,15 +31,31 @@ const Example = (props) => {
         <NavbarToggler onClick={toggle} />
         <Collapse isOpen={isOpen} navbar>
           <Nav className="ml-auto" navbar>
+            {
+              props.isEdit? 
+                <NavItem>
+                  <Button color="success" onClick={props.toogleIsEdit}>Done Edit</Button>
+                </NavItem> : <span></span>
+            }
+            
             <NavItem>
             <Link to='/' className='nav-link'  style={navLinkStyle}>Jobs</Link>
             </NavItem>
-            <NavItem>
-            <Link to='/register' className='nav-link'  style={navLinkStyle}>Register</Link>
-            </NavItem>
-            <NavItem>
-              <Link to='/login' className='nav-link'  style={navLinkStyle}>Login</Link>
-            </NavItem>
+           {
+             props.user === '' || props.user === 'user' ?
+                <React.Fragment>  
+                  <NavItem>
+                  <Link to='/register' className='nav-link'  style={navLinkStyle}>Register</Link>
+                  </NavItem>
+                  <NavItem>
+                    <Link to='/login' className='nav-link'  style={navLinkStyle}>Login</Link>
+                  </NavItem>
+                </React.Fragment> : <span></span>
+           }
+          
+          {
+            props.user !== '' && props.user !== 'user' ?
+
             <UncontrolledDropdown nav inNavbar>
               <DropdownToggle nav caret style={navLinkStyle}>
                 {props.user!=='' ? props.user : 'user'}
@@ -52,14 +69,15 @@ const Example = (props) => {
                 </DropdownItem>
                 <DropdownItem divider />
                 <DropdownItem>
-                <Link to='/company' style={{textDecoration: 'none'}}>Company</Link>
+                <Link to='/company' style={{textDecoration: 'none'}}>Company List</Link>
                 </DropdownItem>
                 <DropdownItem divider />
                 <DropdownItem>
                 <Link to='#' style={{textDecoration: 'none'}} onClick={props.logout}>Logout</Link>
                 </DropdownItem>
               </DropdownMenu>
-            </UncontrolledDropdown>
+            </UncontrolledDropdown> :<span></span>
+          }
           </Nav>
         </Collapse>
       </Navbar>

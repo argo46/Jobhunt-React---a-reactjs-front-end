@@ -9,6 +9,7 @@ export default class AddJob extends Component {
   constructor(props){
     super(props)
     this.state={
+      done:false,
       user:'',
       jobData:{},
       token:'',
@@ -31,7 +32,7 @@ export default class AddJob extends Component {
 
     this.addJob(dataRegister)
       .then(data => {
-        //TODO show confirmation dialog
+        this.setState({done: true})
         console.log(data)
       })
       .catch(err => {
@@ -59,6 +60,7 @@ export default class AddJob extends Component {
     return(
       // this.state.user !=='' ? <Redirect to="/" /> : <LoginComponent 
       //                             onSubmit={this.onSubmit}/>  
+      this.state.done ? <Redirect to="/" /> :
       <AddJobComponent submitJob={this.submitJob}/>
       //TODO redirect to detail job after 
     )

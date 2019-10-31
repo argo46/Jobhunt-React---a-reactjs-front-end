@@ -34,24 +34,28 @@ function JobContents (props) {
           <Input type="search"
                 name="nameSearch"
                 id="nameSearch"
-                placeholder="Nama Pekerjaan"
+                placeholder="Job's Name"
                 // value={props.state.query.qname} 
                 onChange={props.onChangeName}
                 />
           <Input type="search"
-                placeholder="Nama Perusahaan"
+                placeholder="Company Name"
                 name="companySearch"
                 onChange={props.onChangeCompany}
                 // value={props.state.query.qcompany}
                  />
           <InputGroupAddon addonType="append">
-            <Button color="primary" onClick={()=>props.doSearch()}>Cari</Button>
+            <Button color="primary" onClick={props.doSearch}>Search</Button>
         </InputGroupAddon>
       </InputGroup>
       </Row>
       <Row>
-        <div className='col-sm-6'>
-          <p style={{margin: '1rem 0 0 0'}}><strong>{props.state.data.total_result}</strong> pekerjaan ditemukan</p>
+        <div className='col-sm-6'> 
+        {
+          props.state.data.total_result > 1 ? 
+          <p style={{margin: '1rem 0 0 0'}}><strong>{props.state.data.total_result}</strong> jobs found.</p> :
+          <p style={{margin: '1rem 0 0 0'}}><strong>{props.state.data.total_result}</strong> job found.</p>
+        }
         </div>
         <div className='col-sm-6'>
         <Dropdown isOpen={isOpen} toggle={toggle} style={{position:'absolute', bottom:'0', right:'0', marginRight: '1rem'}}>
@@ -60,8 +64,8 @@ function JobContents (props) {
           </DropdownToggle>
             
           <DropdownMenu>
-            <DropdownItem onClick={()=>props.sortBy('date_updated')} >Tanggal diperbarui</DropdownItem>
-            <DropdownItem onClick={()=>props.sortBy('name')}>Nama Pekerjaan</DropdownItem>
+            <DropdownItem onClick={()=>props.sortBy('date_updated')} >Newest</DropdownItem>
+            <DropdownItem onClick={()=>props.sortBy('name')}>Job's Name</DropdownItem>
           </DropdownMenu>
         </Dropdown>
         </div>
@@ -94,7 +98,8 @@ function JobContents (props) {
                   <p style={{fontWeight: 'bold'}}>{v.name}</p> 
                   <p>{v.location} | {v.category}</p>
                   <p>{v.salary}</p> 
-                  <p className='text-justify' style={{maxHeight: '150px', overflow:'hidden', textOverflow: 'ellipsis'}}>{v.description}</p>
+                  <p className='text-justify' style={{maxHeight: '150px', overflow:'hidden', textOverflow: 'ellipsis', marginBottom:'70px'}}>{v.description}</p>
+                  <p style={{position:'absolute', right:'0px', bottom:'0px'}}>{(new Date(v.date_updated) + (new Date().getTimezoneOffset()/60)).slice(0,21)}</p>
                 </div>
               </Row>
               </div>
@@ -115,9 +120,9 @@ function JobContents (props) {
         }
         </Col>
       </Row>
-    </Container>
-
-    </Col></Row>
+      </Container>
+      </Col>
+    </Row>
   )
 }
 

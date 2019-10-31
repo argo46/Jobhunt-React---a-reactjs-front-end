@@ -11,6 +11,8 @@ export default class Login extends Component {
       user:'',
       userData:{},
       token:'',
+      isError:false,
+      errorMessage: '',
       isLoading:'true'
     }
   }
@@ -35,7 +37,8 @@ export default class Login extends Component {
         console.log(this.props)
       })
       .catch(err => {
-        console.log(err)
+        this.setState({isError: true, errorObject: err.response.data})
+        console.log(err.response.data)
       })
   }
 
@@ -48,7 +51,9 @@ export default class Login extends Component {
     
     return(
       this.state.user !=='' ? <Redirect to="/" /> : <LoginComponent 
-                                  onSubmit={this.onSubmit}/>                   
+                                  onSubmit={this.onSubmit}
+                                  isError={this.state.isError}
+                                  errorMessage={this.state.errorMessage}/>                   
     )
   }
 }

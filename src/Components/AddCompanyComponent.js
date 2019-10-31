@@ -3,19 +3,14 @@ import {Form, FormGroup, Label, Input, Button, Card} from 'reactstrap'
 
 
 
-function AddJobComponent (props) {
+function AddCompany (props) {
 
   return (
     <Card style={{width: '100%', maxWidth: '700px', padding: '15px', margin: 'auto'}}>
       <Form onSubmit={props.submitJob} >
         <FormGroup>
-          <Label for="companyName">Company Name</Label>
-          <Input type="text" name="companyName" id="companyName" placeholder="Company Name" />
-        </FormGroup>
-
-        <FormGroup>
-          <Label for="companyLocation">Company Location</Label>
-          <Input type="text" name="companyName" id="companyName" placeholder="Nama Pekerjaan" />
+          <Label for="jobName">Job's Name</Label>
+          <Input type="text" name="jobName" id="jobNameInput" placeholder="Nama Pekerjaan" />
         </FormGroup>
 
         <FormGroup>
@@ -50,4 +45,4 @@ function AddJobComponent (props) {
   )
 }
 
-export default (AddJobComponent)
+export default (AddCompany)

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import {BrowserRouter,Route,Switch} from 'react-router-dom'
+import {BrowserRouter,Route,Switch, Redirect} from 'react-router-dom'
 
 import Navbar from './Components/Navbar'
 import JobContents from './Components/JobContents'
@@ -9,6 +9,7 @@ import Register from './Pages/Register'
 import AddJob from './Pages/AddJob'
 import UpdateJob from './Pages/UpdateJob'
 import Company from './Pages/Company'
+import AddCompany from './Pages/AddCompany'
 
 const queryString = require('querystring')
 
@@ -22,11 +23,16 @@ export default class App extends Component {
       logo:'',
       user: '',
       token: '',
+      homeRedirect:false,
       isEdit: false,
-      query:{qname:'', qcompany:'', orderby:''},
+      query:{qname:'', qcompany:'', orderby:'date_updated', order:'asc'},
       isLoading: true,
       page:'http://localhost:3000/job/jobs/?'
     }
+  }
+
+  componentWillMount(){
+    this.setState({homeRedirect:false})
   }
 
   async componentDidMount(){
@@ -79,8 +85,9 @@ export default class App extends Component {
   }
 
   logout = async () => {
-    await localStorage.clear();
-    window.location.reload();
+    await localStorage.clear()
+    this.setState({user:''})
+    window.location.reload()
   }
 
   doSearch = async () => {
@@ -90,7 +97,6 @@ export default class App extends Component {
         this.setState({data,
                       next:data.next_page,
                       prev:data.prev_page,
-                      qname:'',
                       query: {qname:'', qcompany:'', orderby:''},
                       isLoading: false })
       })
@@ -115,6 +121,11 @@ export default class App extends Component {
   sortBy = (queryOrder) => {
     console.log(`SORT ${queryOrder} = ${this.state.page}`)
     this.state.query.orderby = queryOrder
+    if(queryOrder === 'date_updated'){
+      this.state.query.order = 'desc'
+    } else {
+      this.state.query.order = 'asc'
+    }
     this.getData()
       .then(data => {
         console.log(this.state.page)
@@ -134,13 +145,19 @@ export default class App extends Component {
 
   toogleIsEdit = () => {
     const isEditvalue = !(this.state.isEdit)
-    this.setState ({isEdit: isEditvalue})
+    if(window.location.href !== 'http://localhost:8000/'){
+      this.setState({homeRedirect: true})
+    } else {
+      this.setState ({isEdit: isEditvalue})
+    }
+    console.log(window.location.href)
   }
 
   deleteJob = (id) => {
     this.deleteJobRequest(id)
     .then(data => {
       console.log(data)
+      window.location.reload();
     })
     .catch(err => {
       console.log(err)
@@ -164,9 +181,11 @@ export default class App extends Component {
     return (
       <div>
         <BrowserRouter>
+        {!this.state.homeRedirect ? <span></span> : <Redirect to="/" />}
           <Navbar user={this.state.user}
                   logout={this.logout}
-                  toogleIsEdit={this.toogleIsEdit}/>
+                  toogleIsEdit={this.toogleIsEdit}
+                  isEdit={this.state.isEdit}/>
           <Switch>
             <Route path='/' exact 
               component={() => <JobContents state={this.state} 
@@ -181,6 +200,7 @@ export default class App extends Component {
               <Route path='/add-job' component={AddJob}/>
               <Route path='/update-job/:id' component={UpdateJob}/>
               <Route path='/company' component={Company} />
+              <Route path='/company/add' component={AddCompany} />
             
           </Switch>
           

@@ -1,12 +1,16 @@
 import React from 'react';
 import {Row, Col, Container, 
   Button} from 'reactstrap'
+import {Link} from 'react-router-dom'
 
 function JobContents (props) {
 
   return (
     <Row><Col className="d-flex justify-content-center">
     <Container style={{margin:'1rem', maxWidth: '700px'}}>
+      <Row>
+      <Link to="/company/new"><Button>Add Company</Button></Link>  
+      </Row>
       <Row className='justiy-content-md-center list-group' style={{padding:'0', margin: '0'}}>
         {props.state.isLoading&&(
           <p>Loading...</p>
