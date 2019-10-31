@@ -1,7 +1,7 @@
 import React from 'react'
 
 
-function Login (props) {
+function LoginComponent (props) {
   return (
     <form class="form-signin" onSubmit={props.onSubmit} style={{width: '100%', maxWidth: '330px', padding: '15px', margin: 'auto'}}>
       <img class="mb-4" src="/docs/4.3/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72"/>
@@ -21,4 +21,4 @@ function Login (props) {
   )
 }
 
-export default (Login)
+export default (LoginComponent)

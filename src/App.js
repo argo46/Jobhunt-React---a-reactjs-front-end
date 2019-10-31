@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import {BrowserRouter,Route,Switch, Redirect} from 'react-router-dom'
+import {BrowserRouter,Route,Switch} from 'react-router-dom'
 
 import Navbar from './Components/Navbar'
 import JobContents from './Components/JobContents'
-import Login from './Components/Login'
+import Login from './Pages/Login'
+import Register from './Pages/Register'
+import AddJob from './Pages/AddJob'
 
 const queryString = require('querystring')
 
@@ -25,13 +27,17 @@ export default class App extends Component {
   }
 
   async componentDidMount(){
+    console.log('USER '+ this.props.user)
+    let user_name = localStorage.getItem('user_name')
+    if (!user_name) {user_name = 'user'}
     this.getData()
     .then(data => {
       console.log(data)
       this.setState({data,
                     next:data.next_page,
                     prev:data.prev_page,
-                    isLoading:false})
+                    isLoading:false,
+                    user: user_name})
     })
     .catch(err=>{
       console.log(err)
@@ -41,7 +47,7 @@ export default class App extends Component {
   getData = async (url) => {
     if(url === undefined ){ 
       const jobs = await axios.get(this.state.page + queryString.stringify(this.state.query))
-      console.log(`get ${this.state.page}`)
+      console.log(`get ${this.state.page + queryString.stringify(this.state.query)}`)
       return jobs.data
     } else {
       console.log(`get ${url}`)
@@ -69,31 +75,42 @@ export default class App extends Component {
     // TODO : go to detail jobs
   }
 
+  logout = async () => {
+    await localStorage.clear();
+    window.location.reload();
+  }
+
   doSearch = async () => {
     this.getData()
       .then(data => {
         this.setState({data,
                       next:data.next_page,
                       prev:data.prev_page,
+                      qname:'',
+                      query: {qname:'', qcompany:'', orderby:''},
                       isLoading: false })
       })
       .catch(err => {
         console.log(err)
       })
-      console.log(`http://localhost:3000/job/jobs/?qname=${this.state.qname}&qcompany=${this.state.qcompany}`)
   }
   onChangeName = (event) => {
     this.state.query.qname = event.target.value
+    // let newQuery = Object.assign({}, this.state.query)
+    // newQuery.qname = event.target.value
+    // this.setState({query:newQuery})
   }
 
   onChangeCompany = (event) => {
     this.state.query.qcompany = event.target.value
+    // let newQuery = Object.assign({}, this.state.query)
+    // newQuery.qcompany = event.target.value
+    // this.setState({query:newQuery})
   }
 
   sortBy = (queryOrder) => {
     console.log(`SORT ${queryOrder} = ${this.state.page}`)
     this.state.query.orderby = queryOrder
-    // this.state.page = this.state.page + `orderby=${query}&order=asc`
     this.getData()
       .then(data => {
         console.log(this.state.page)
@@ -107,37 +124,16 @@ export default class App extends Component {
       })
   }
 
-  onSubmit = (event) => {
-    event.preventDefault();
-    console.log(event.target.email.value)
-    console.log(event.target.password.value)
-    const dataLogin = {
-      email: event.target.email.value,
-      password: event.target.password.value
-    }
-
-    this.login(dataLogin)
-      .then(data => {
-        this.setState({token: data.token, user: data.result.name, redirect: true})
-        console.log(data)
-        console.log(this.props)
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  }
-
-  login = async (dataLogin) => {
-    const user = await axios.post('http://localhost:3000/user/login', dataLogin ,{'Content-Type': 'application/x-www-form-urlencoded'})
-    return user.data
+  setUserState = (user) =>{
+    this.setState({user: user})
   }
 
   render() {
-    console.log('RENDER')
     return (
       <div>
         <BrowserRouter>
-          <Navbar user={this.state.user}/>
+          <Navbar user={this.state.user}
+                  logout={this.logout}/>
           <Switch>
             <Route path='/' exact 
               component={() => <JobContents state={this.state} 
@@ -146,8 +142,9 @@ export default class App extends Component {
                                   onChangeName={this.onChangeName}
                                   onChangeCompany={this.onChangeCompany}
                                   sortBy={this.sortBy}/>} />
-              <Route path='/login'> {this.state.user !=='' ? <Redirect to="/" /> : <Login 
-                                  onSubmit={this.onSubmit}/>}</Route>
+              <Route path='/login' component={() => <Login setUserState={this.setUserState}/>}/>
+              <Route path='/register' component={() => <Register setUserState={this.setUserState}/>}/>
+              <Route path='/add-job' component={AddJob}/>
             
           </Switch>
           

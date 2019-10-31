@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
-import {BrowserRouter,Link} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import '../App.css'
 
 import {
   Collapse,
   Navbar,
   NavbarToggler,
-  NavbarBrand,
   Nav,
   NavItem,
-  NavLink,
   UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
@@ -33,7 +31,7 @@ const Example = (props) => {
         <Collapse isOpen={isOpen} navbar>
           <Nav className="ml-auto" navbar>
             <NavItem>
-              <NavLink href="#" style={navLinkStyle}>Components</NavLink>
+            <Link to='/register' className='nav-link'  style={navLinkStyle}>Register</Link>
             </NavItem>
             <NavItem>
               <Link to='/login' className='nav-link'  style={navLinkStyle}>Login</Link>
@@ -44,14 +42,14 @@ const Example = (props) => {
               </DropdownToggle>
               <DropdownMenu right>
                 <DropdownItem>
-                  Option 1
+                <Link to='/add-job' style={{textDecoration: 'none'}}>Tambahkan Pekerjaan</Link>
                 </DropdownItem>
                 <DropdownItem>
-                  Option 2
+                <Link to='#' style={{textDecoration: 'none'}}>Tambahkan Perusahaan</Link>
                 </DropdownItem>
                 <DropdownItem divider />
                 <DropdownItem>
-                  Reset
+                <Link to='#' style={{textDecoration: 'none'}} onClick={props.logout}>Logout</Link>
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>

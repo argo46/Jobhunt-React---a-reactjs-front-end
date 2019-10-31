@@ -10,17 +10,23 @@ function JobContents (props) {
   const toggle = () => setIsOpen(!isOpen)
 
   return (
-    <Container style={{margin:'1rem', maxWidth: '40rem'}}>
-      <Row style={{margin:'0'}}>
+    <Row><Col className="d-flex justify-content-center">
+    <Container style={{margin:'1rem', maxWidth: '700px'}}>
+      <Row style={{margin:'0'}} key="namesearchhomepage">
         <InputGroup>
           <Input type="search"
+                name="nameSearch"
+                id="nameSearch"
                 placeholder="Nama Pekerjaan"
+                // value={props.state.query.qname} 
                 onChange={props.onChangeName}
-                value={props.state.qname} />
+                />
           <Input type="search"
                 placeholder="Nama Perusahaan"
+                name="companySearch"
                 onChange={props.onChangeCompany}
-                value={props.state.qcompany} />
+                // value={props.state.query.qcompany}
+                 />
           <InputGroupAddon addonType="append">
             <Button color="primary" onClick={()=>props.doSearch()}>Cari</Button>
         </InputGroupAddon>
@@ -50,8 +56,8 @@ function JobContents (props) {
         {!props.state.isLoading&&
           <React.Fragment>
             {props.state.data.result.map((v) => (
-              <div className='list-group-item'>
-              <Row key={v.id} className='row col-md-12' >
+              <div key={v.id} className='list-group-item'>
+              <Row className='row col-md-12'>
                 <div className='col-md-3'><img onClick={()=>this.goToDetail(v.id)} src={v.company_logo} alt='Company Logo' style={{display:'block', maxWidth: '110px'}}/></div>
                 <div className='col-md-9'>
                   <p style={{fontWeight: 'bold'}}>{v.name}</p> 
@@ -79,6 +85,8 @@ function JobContents (props) {
         </Col>
       </Row>
     </Container>
+
+    </Col></Row>
   )
 }
 
