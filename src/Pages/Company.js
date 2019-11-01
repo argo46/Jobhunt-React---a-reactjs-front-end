@@ -26,6 +26,28 @@ export default class Company extends Component {
     })
   }
 
+  deleteCompany = (id) => {
+    this.deleteCompanyRequest(id)
+    .then(data => {
+      console.log(data)
+      window.location.reload();
+    })
+    .catch(err => {
+      console.log(err)
+    }) 
+  }
+
+  deleteCompanyRequest = async (id) => {
+    const response = await axios({
+      method:'DELETE',
+      url:'http://localhost:3000/company/' + id,
+      headers:{
+        'content-type': 'application/x-www-form-urlencoded',
+      }
+    })
+    return response.data
+  }
+
   getAllCompanies = async () => {
     const user = await axios({
       method:'GET',
@@ -37,7 +59,8 @@ export default class Company extends Component {
   render() {
     
     return(
-      <CompanyComponent state={this.state}/>
+      <CompanyComponent state={this.state}
+                        deleteCompany={this.deleteCompany}/>
     )
   }
 }

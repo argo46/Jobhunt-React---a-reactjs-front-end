@@ -28,6 +28,10 @@ function JobContents (props) {
                   <p>description :</p>
                   <p className='text-justify' style={{maxHeight: '150px', overflow:'hidden', textOverflow: 'ellipsis'}}>{v.description}</p>
                 </div>
+                <div>
+                  <Button color='danger' onClick={()=>{props.deleteCompany(v.id)}}>Delete</Button>
+                  <Link to = {"/company/"+v.id}><Button color='primary'>Update</Button></Link>
+                  </div>
               </Row>
               </div>
             ))}

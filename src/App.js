@@ -10,6 +10,7 @@ import AddJob from './Pages/AddJob'
 import UpdateJob from './Pages/UpdateJob'
 import Company from './Pages/Company'
 import AddCompany from './Pages/AddCompany'
+import UpdateCompany from './Pages/UpdateCompany'
 
 const queryString = require('querystring')
 
@@ -199,8 +200,9 @@ export default class App extends Component {
               <Route path='/register' component={() => <Register setUserState={this.setUserState}/>}/>
               <Route path='/add-job' component={AddJob}/>
               <Route path='/update-job/:id' component={UpdateJob}/>
-              <Route path='/company' component={Company} />
-              <Route path='/company/add' component={AddCompany} />
+              <Route path='/company' component={Company} exact/>
+              <Route path='/company/new' component={AddCompany} />
+              <Route path='/company/:id' component={UpdateCompany} />
             
           </Switch>
           
