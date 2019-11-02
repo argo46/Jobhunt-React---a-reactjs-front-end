@@ -3,7 +3,6 @@ import axios from 'axios'
 import {BrowserRouter,Route,Switch, Redirect} from 'react-router-dom'
 
 import Navbar from './Components/Navbar'
-import JobContents from './Components/JobContents'
 import Login from './Pages/Login'
 import Register from './Pages/Register'
 import AddJob from './Pages/AddJob'
@@ -11,6 +10,8 @@ import UpdateJob from './Pages/UpdateJob'
 import Company from './Pages/Company'
 import AddCompany from './Pages/AddCompany'
 import UpdateCompany from './Pages/UpdateCompany'
+
+import JobList from './Pages/JobList'
 
 const queryString = require('querystring')
 
@@ -36,23 +37,6 @@ export default class App extends Component {
     this.setState({homeRedirect:false})
   }
 
-  async componentDidMount(){
-    console.log('USER '+ this.props.user)
-    let user_name = localStorage.getItem('user_name')
-    if (!user_name) {user_name = 'user'}
-    this.getData()
-    .then(data => {
-      console.log(data)
-      this.setState({data,
-                    next:data.next_page,
-                    prev:data.prev_page,
-                    isLoading:false,
-                    user: user_name})
-    })
-    .catch(err=>{
-      console.log(err)
-    })
-  }
 
   getData = async (url) => {
     if(url === undefined ){ 
@@ -66,57 +50,11 @@ export default class App extends Component {
     }
     
   }
-  buttonPress = async (url) => {
-    this.setState({isLoading:true})
-    this.getData(url)
-    .then(data => {
-      console.log(data)
-      this.setState({data,
-                    next:data.next_page,
-                    prev:data.prev_page,
-                    isLoading: false })
-    })
-    .catch(err => {
-      console.log(err)
-    })
-  }
-  goToDetail = (id) => {
-    // this.props.history.push('/character'+id)
-    // TODO : go to detail jobs
-  }
 
   logout = async () => {
     await localStorage.clear()
     this.setState({user:''})
     window.location.reload()
-  }
-
-  doSearch = async () => {
-    this.getData()
-      .then(data => {
-        console.log(data)
-        this.setState({data,
-                      next:data.next_page,
-                      prev:data.prev_page,
-                      query: {qname:'', qcompany:'', orderby:''},
-                      isLoading: false })
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  }
-  onChangeName = (event) => {
-    this.state.query.qname = event.target.value
-    // let newQuery = Object.assign({}, this.state.query)
-    // newQuery.qname = event.target.value
-    // this.setState({query:newQuery})
-  }
-
-  onChangeCompany = (event) => {
-    this.state.query.qcompany = event.target.value
-    // let newQuery = Object.assign({}, this.state.query)
-    // newQuery.qcompany = event.target.value
-    // this.setState({query:newQuery})
   }
 
   sortBy = (queryOrder) => {
@@ -154,29 +92,6 @@ export default class App extends Component {
     console.log(window.location.href)
   }
 
-  deleteJob = (id) => {
-    this.deleteJobRequest(id)
-    .then(data => {
-      console.log(data)
-      window.location.reload();
-    })
-    .catch(err => {
-      console.log(err)
-    }) 
-  }
-
-  deleteJobRequest = async (id) => {
-    const token = await localStorage.getItem('token')
-    const response = await axios({
-      method:'DELETE',
-      url:'http://localhost:3000/job/' + id,
-      headers:{
-        'content-type': 'application/x-www-form-urlencoded',
-        'authorization': 'Bearer '+ String(token)
-      }
-    })
-    return response.data
-  }
 
   render() {
     return (
@@ -189,13 +104,8 @@ export default class App extends Component {
                   isEdit={this.state.isEdit}/>
           <Switch>
             <Route path='/' exact 
-              component={() => <JobContents state={this.state} 
-                                  deleteJob={this.deleteJob}
-                                  buttonPress={this.buttonPress} 
-                                  doSearch={this.doSearch}
-                                  onChangeName={this.onChangeName}
-                                  onChangeCompany={this.onChangeCompany}
-                                  sortBy={this.sortBy}/>} />
+                    component={() => <JobList isEdit={this.state.isEdit}
+                                              user={this.state.user}/>}/>
               <Route path='/login' component={() => <Login setUserState={this.setUserState}/>}/>
               <Route path='/register' component={() => <Register setUserState={this.setUserState}/>}/>
               <Route path='/add-job' component={AddJob}/>
