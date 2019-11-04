@@ -15,6 +15,10 @@ export default class Company extends Component {
   }
 
   componentDidMount(){
+    this.updateData()
+  }
+
+  updateData = () => {
     this.getAllCompanies()
     .then(data => {
       console.log(data)
@@ -30,7 +34,7 @@ export default class Company extends Component {
     this.deleteCompanyRequest(id)
     .then(data => {
       console.log(data)
-      window.location.reload();
+      this.updateData()
     })
     .catch(err => {
       console.log(err)
