@@ -57,6 +57,9 @@ export default class Register extends Component {
         this.props.setUserState(data.result.name)
         console.log(data)
         console.log(this.props)
+        localStorage.setItem('user_name', data.result.name)
+        localStorage.setItem('user_id', data.result.id)
+        localStorage.setItem('token', data.token)
       })
       .catch(err => {
         console.log(err)
