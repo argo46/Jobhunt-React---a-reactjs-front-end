@@ -8,63 +8,47 @@ import Job from '../Components/Job'
 import Pagination from '../Components/Pagination'
 
 
+import {connect} from 'react-redux'
 
-export default class JobList extends Component {
+import {getJobs} from '../redux/action/jobs'
+
+
+
+class JobList extends Component {
   constructor(props) {
     super(props)
     this.state = {
       query:{qname:'', qcompany:'', orderby:'date_updated', order:'asc'},
-      data:{},
-      next:'',
-      prev:'',
-      user:'',
-      isLoading:true,
-      page:'http://localhost:3000/job/jobs/?'
+      user:''
     }
   }
 
   async componentDidMount(){
     console.log('USER '+ this.props.user)
-    let user_name = localStorage.getItem('user_name')
+    let user_name = await localStorage.getItem('user_name')
     if (!user_name) {user_name = 'user'}
     this.getData()
-    .then(data => {
-      console.table(data)
-      this.setState({data,
-                    next:data.next_page,
-                    prev:data.prev_page,
-                    isLoading:false,
-                    user: user_name})
-    })
-    .catch(err=>{
-      console.log(err)
-    })
   }
 
-  getData = async (url) => {
-    if(url === undefined ){ 
-      const jobs = await axios.get(this.state.page + queryString.stringify(this.state.query))
-      console.log(`get ${this.state.page + queryString.stringify(this.state.query)}`)
-      return jobs.data
+  getData = (query) => {
+    // if(url === undefined ){ 
+    //   const jobs = await axios.get(this.state.page + queryString.stringify(this.state.query))
+    //   console.log(`get ${this.state.page + queryString.stringify(this.state.query)}`)
+    //   return jobs.data
+    // } else {
+    //   console.log(`get ${url}`)
+    //   const jobs = await axios.get(url)
+    //   return jobs.data
+    // }
+    if(query === undefined ){
+      this.props.dispatch(getJobs(queryString.stringify(this.state.query)))
     } else {
-      console.log(`get ${url}`)
-      const jobs = await axios.get(url)
-      return jobs.data
+      this.props.dispatch(getJobs(query.toString()))
+      console.log(query)
     }
+    console.log(this.props)
   }
-  updateData = (url) => {
-    this.getData(url)
-    .then(data => {
-      console.table(data)
-      this.setState({data,
-                    next:data.next_page,
-                    prev:data.prev_page,
-                    isLoading:false,})
-    })
-    .catch(err=>{
-      console.log(err)
-    })
-  }
+
 
   deleteJob = async (id) => {
     const token = await localStorage.getItem('token')
@@ -77,7 +61,7 @@ export default class JobList extends Component {
       }})
       .then(data => {
         console.log(data)
-        this.setState({ state: this.state })
+        this.updateData()
       })
       .catch(err => {
         console.log(err)
@@ -86,7 +70,7 @@ export default class JobList extends Component {
 
   
   doSearch = () => {
-    this.updateData()
+    this.getData()
   }
 
   onKeyDownSearch = (event) => {
@@ -97,7 +81,8 @@ export default class JobList extends Component {
   }
 
   paginationButtonPressed = (url) => {
-    this.updateData(url)
+    this.getData(url.slice(32,url.length))
+    
   }
   
   onChangeCompany = (event) => {
@@ -111,6 +96,17 @@ export default class JobList extends Component {
     this.setState({query: queryTemp})
   }
 
+  doSort= async (event) => {
+    let queryTemp = Object.assign({}, this.state.query)
+    queryTemp.orderby = event.target.value
+    if(event.target.value === 'date_updated') {
+      queryTemp.order = 'desc'
+    } else {
+      queryTemp.order = 'asc'
+    }
+    await this.setState({query: queryTemp})
+    this.getData()
+  }
 
   render() {
     return (
@@ -121,16 +117,19 @@ export default class JobList extends Component {
                 onChangeName={this.onChangeName}
                 qcompany={this.state.query.qcompany}
                 qname={this.state.query.qname}
-                onKeyDownSearch={this.onKeyDownSearch}/>
+                onKeyDownSearch={this.onKeyDownSearch} />
 
-          {!this.state.isLoading?
+          {(!this.props.jobs.isLoading) ?
           <div>
-            <Job data={this.state.data}
-                isEdit={this.props.isEdit}
-                user={this.state.user}
-                />
-            <Pagination prev={this.state.prev}
-                        next={this.state.next}
+            {console.log('sdfsd'+this.props.jobs.isLoading)}
+              <Job data={this.props.jobs.data}
+              isEdit={this.props.isEdit}
+              user={this.state.user}
+              doSort={this.doSort}
+              deleteJob={this.deleteJob}
+              />
+            <Pagination prev={this.props.jobs.data.prev_page}
+                        next={this.props.jobs.data.next_page}
                         paginationButtonPressed={this.paginationButtonPressed} />
           </div>
           : <h1>Loading...</h1>}
@@ -138,4 +137,12 @@ export default class JobList extends Component {
       </Container>
     )
   }
+} 
+
+const mapStateToProps = state => {
+  return {
+    jobs: state.jobs
+  }
 }
+
+export default connect(mapStateToProps)(JobList)

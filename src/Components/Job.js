@@ -1,61 +1,159 @@
 import React, { Component } from 'react'
-import {Row, Button} from 'reactstrap'
+import {Row, ButtonDropdown ,DropdownToggle, DropdownMenu, DropdownItem} from 'reactstrap'
 import {Link} from 'react-router-dom'
+import PropTypes from 'prop-types';
 
-export default class Job extends Component {
+import { withStyles } from '@material-ui/core/styles'
+import {Card, CardActions, CardContent, Button, Typography } from '@material-ui/core/'
+
+import {connect} from 'react-redux'
+
+
+const useStyles = {
+  card: {
+    minWidth: 275,
+    margin: '1rem'
+  },
+  bullet: {
+    display: 'inline-block',
+    margin: '0 2px',
+    transform: 'scale(0.8)',
+  },
+  title: {
+    fontSize: 14,
+  },
+  pos: {
+    marginBottom: 12,
+  }
+}
+
+// const ReactCSSTransitionGroup = require('react-addons-css-transition-group');
+
+
+class Job extends Component {
   constructor(props){
     super(props)
     this.state={
-
+      dropdownOpen: false,
+      cardSelected: '',
     }
   }
-  render() {
+
+  cardStyle = (id) => {
+    if (id == this.state.cardSelected) {
+      const style = {
+        // transitionDuration: '1s',
+        transition: 'width 1s',
+        width: '730px',
+        
+      }
+      return style
+    } else {
+      const style = {
+        maxWidth: '700px',
+        transition: 'width 1s',
+        backgroundColor: 'white'
+      }
+      return style
+    }
+  }
+  
+  
+  dropdownToggle = () =>{
+    this.setState({dropdownOpen: !this.state.dropdownOpen})
+  }
+
+  onSelectCard = (id) =>{
+    this.setState({cardSelected:id})
+  }
+
+  render() { 
+    const { classes } = this.props
+   
+    
     return (
-         <div>
-         {this.props.data.result.map((v) => (
-               <div key={v.id} className='list-group-item'>
-               <Row>
-               {
-                 this.props.user !== 'user' && this.props.isEdit ? 
-                 <Link to={'/update-job/'+v.id}><Button color='primary' style={editButtonStyle}>EDIT</Button></Link> : 
-                 <Button style={{display:'none'}}>edit</Button>
-               }
-               </Row>
-               <Row>
-               {
-                 this.props.user !== 'user' && this.props.isEdit ? 
-                 <Button color='danger' style={deleteButtonStyle} onClick={()=>{this.props.deleteJob(v.id)}}>DELETE</Button>: 
-                 <Button style={{display:'none'}}>DELETE</Button>
-               }
-               </Row>
-               <Row className='row col-md-12'>
-                 <div className='col-md-3'><img src={v.company_logo} alt='Company Logo' style={{display:'block', maxWidth: '110px'}}/></div>
-                 <div className='col-md-9'>
-                   <p style={{fontWeight: 'bold'}}>{v.name}</p> 
-                   <p>{v.location} | {v.category}</p>
-                   <p>{v.salary}</p> 
-                   <p className='text-justify' style={{maxHeight: '150px', overflow:'hidden', textOverflow: 'ellipsis', marginBottom:'70px'}}>{v.description}</p>
-                   <p style={{position:'absolute', right:'0px', bottom:'0px'}}>{(new Date(v.date_updated) + (new Date().getTimezoneOffset()/60)).slice(0,21)}</p>
-                 </div>
-               </Row>
+        <div>
+          {
+            this.props.data.result.map((v) => (
+            <Card className={classes.card} key={v.id} onClick={()=> this.onSelectCard(v.id)} style={this.cardStyle(v.id)}>
+            <CardContent>
+              <div style={{display:'flex'}}>
+              <img src={v.company_logo} alt='Company Logo' style={{display:'block', maxWidth: '110px', margin: '20px'}}/>
+                <div>
+                <Typography variant="h6">
+                  {v.name}
+                </Typography>
+                <Typography className={classes.title} color="textSecondary" gutterBottom>
+                  {v.company}
+                </Typography>
+                <Typography className={classes.pos} color="textSecondary">
+                  {v.location} | {v.category}
+                </Typography>
+                </div>
               </div>
-             ))}
-       </div> 
+              <Typography variant="body2" component="p">
+                {v.description}
+              </Typography>
+            </CardContent>
+            <CardActions>
+              <Button size="small">Learn More</Button>
+            </CardActions>
+          </Card>
+          )) }
+        </div>
+        // <div>
+          //  {this.props.jobs.data.result.map((v) => (
+            
+          //   <Card className={classes.card} key={v.id} onClick={()=> this.onSelectCard(v.id)} style={this.cardStyle(v.id)}>
+          //   <CardContent>
+          //     <div style={{display:'flex'}}>
+          //     <img src={v.company_logo} alt='Company Logo' style={{display:'block', maxWidth: '110px', margin: '20px'}}/>
+          //       <div>
+          //       <Typography variant="h6">
+          //         {v.name}
+          //       </Typography>
+          //       <Typography className={classes.title} color="textSecondary" gutterBottom>
+          //         {v.company}
+          //       </Typography>
+          //       <Typography className={classes.pos} color="textSecondary">
+          //         {v.location} | {v.category}
+          //       </Typography>
+          //       </div>
+          //     </div>
+          //     <Typography variant="body2" component="p">
+          //       {v.description}
+          //     </Typography>
+          //   </CardContent>
+          //   <CardActions>
+          //     <Button size="small">Learn More</Button>
+          //   </CardActions>
+          // </Card>
+          // ))}
+        // </div>
     )
   }
+} 
+
+Job.propTypes = {
+  classes: PropTypes.object.isRequired,
 }
 
-const editButtonStyle = {
-  position: 'absolute',
-  top:'10px',
-  right:'10px',
-  fontSize:'0.5rem',
-}
+const mapStateToProps = state => ({
+  jobs: state.jobs
+})
+export default withStyles(useStyles)(Job)
 
-const deleteButtonStyle = {
-  position: 'absolute',
-  top:'40px',
-  right:'10px',
-  fontSize:'0.3rem',
-  // display: 'none'
-}
+// const editButtonStyle = {
+//   position: 'absolute',
+//   top:'10px',
+//   right:'10px',
+//   fontSize:'0.5rem',
+// }
+
+// const deleteButtonStyle = {
+//   position: 'absolute',
+//   top:'40px',
+//   right:'10px',
+//   fontSize:'0.3rem',
+//   // display: 'none'
+// }

@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import axios from 'axios'
 import {BrowserRouter,Route,Switch, Redirect} from 'react-router-dom'
 
 import Navbar from './Components/Navbar'
@@ -12,8 +11,10 @@ import AddCompany from './Pages/AddCompany'
 import UpdateCompany from './Pages/UpdateCompany'
 
 import JobList from './Pages/JobList'
+import DrawerComponent from './Components/DrawerComponent'
 
-const queryString = require('querystring')
+import store from './redux/store.js'
+import {Provider} from 'react-redux'
 
 export default class App extends Component {
   constructor(props) {
@@ -37,45 +38,15 @@ export default class App extends Component {
     this.setState({homeRedirect:false})
   }
 
-
-  getData = async (url) => {
-    if(url === undefined ){ 
-      const jobs = await axios.get(this.state.page + queryString.stringify(this.state.query))
-      console.log(`get ${this.state.page + queryString.stringify(this.state.query)}`)
-      return jobs.data
-    } else {
-      console.log(`get ${url}`)
-      const jobs = await axios.get(url)
-      return jobs.data
-    }
-    
+  componentDidMount(){
+    let user_name = localStorage.getItem('user_name')
+    if (!user_name) {user_name = 'user'}
+    this.setState({user:user_name})
   }
 
   logout = async () => {
     await localStorage.clear()
     this.setState({user:''})
-    window.location.reload()
-  }
-
-  sortBy = (queryOrder) => {
-    console.log(`SORT ${queryOrder} = ${this.state.page}`)
-    this.state.query.orderby = queryOrder
-    if(queryOrder === 'date_updated'){
-      this.state.query.order = 'desc'
-    } else {
-      this.state.query.order = 'asc'
-    }
-    this.getData()
-      .then(data => {
-        console.log(this.state.page)
-        this.setState({data,
-                      next:data.next_page,
-                      prev:data.prev_page,
-                      isLoading: false })
-      })
-      .catch(err => {
-        console.log(err)
-      })
   }
 
   setUserState = (user) =>{
@@ -97,25 +68,33 @@ export default class App extends Component {
     return (
       <div>
         <BrowserRouter>
-        {!this.state.homeRedirect ? <span></span> : <Redirect to="/" />}
-          <Navbar user={this.state.user}
-                  logout={this.logout}
-                  toogleIsEdit={this.toogleIsEdit}
-                  isEdit={this.state.isEdit}/>
-          <Switch>
-            <Route path='/' exact 
-                    component={() => <JobList isEdit={this.state.isEdit}
-                                              user={this.state.user}/>}/>
-              <Route path='/login' component={() => <Login setUserState={this.setUserState}/>}/>
-              <Route path='/register' component={() => <Register setUserState={this.setUserState}/>}/>
-              <Route path='/add-job' component={AddJob}/>
-              <Route path='/update-job/:id' component={UpdateJob}/>
-              <Route path='/company' component={Company} exact/>
-              <Route path='/company/new' component={AddCompany} />
-              <Route path='/company/:id' component={UpdateCompany} />
-            
-          </Switch>
-          
+        <Provider store={store}>
+        {/* {!this.state.homeRedirect ? <></> : <Redirect to="/" />} */}
+          <div style={{display: 'flex', alignItems: 'stretch', backgroundColor:'transparent'}}>
+            {/* <DrawerComponent/> */}
+            <div style={{flexGrow: '1', backgroundColor:'transparent'}}>
+              <div>
+            <Navbar user={this.state.user}
+                      logout={this.logout}
+                      toogleIsEdit={this.toogleIsEdit}
+                      isEdit={this.state.isEdit}/>
+              </div>
+              <div>
+              <Switch>
+                <Route path='/' exact 
+                        component={() => <JobList isEdit={this.state.isEdit}/>}/>
+                  <Route path='/login' component={() => <Login setUserState={this.setUserState}/>}/>
+                  <Route path='/register' component={() => <Register setUserState={this.setUserState}/>}/>
+                  <Route path='/add-job' component={AddJob}/>
+                  <Route path='/update-job/:id' component={UpdateJob}/>
+                  <Route path='/company' component={Company} exact/>
+                  <Route path='/company/new' component={AddCompany} />
+                  <Route path='/company/:id' component={UpdateCompany} />
+              </Switch>
+              </div>
+            </div>
+          </div>
+          </Provider>
         </BrowserRouter>
         
       </div>
