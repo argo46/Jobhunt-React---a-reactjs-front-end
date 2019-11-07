@@ -4,7 +4,7 @@ import axios from 'axios'
 
 import UpdateCompanyComponent from '../Components/UpdateCompanyComponent'
 
-export default class AddJob extends Component {
+export default class UpdateCompany extends Component {
   constructor(props){
     super(props)
     this.state={

@@ -4,8 +4,10 @@ import axios from 'axios'
 import qs from 'qs'
 
 import UpdateJobComponent from '../Components/UpdateJobComponent'
+import {connect} from 'react-redux'
+import {updateJob} from '../redux/action/jobs'
 
-export default class AddJob extends Component {
+class UpdateJob extends Component {
   constructor(props){
     super(props)
     this.state={
@@ -30,15 +32,18 @@ export default class AddJob extends Component {
       company: event.target.companyID.value
    }
     console.log(dataRegister)
-
-    this.updateJob(dataRegister)
-      .then(data => {
-          console.log(data)
-          this.setState({done:true})
-      })
-      .catch(err => {
-        console.log(err)
-    })    
+    this.props.dispatch(updateJob())
+    if(!this.jobs.isLoading && !this.jobs.isError){
+      this.setState({done:true})
+    }
+    // this.updateJob(dataRegister)
+    //   .then(data => {
+    //       console.log(data)
+    //       this.setState({done:true})
+    //   })
+    //   .catch(err => {
+    //     console.log(err)
+    // })    
   }
 
   componentWillMount () {
@@ -76,21 +81,6 @@ export default class AddJob extends Component {
     return user.data
   }
 
-  updateJob = async (dataRegister) => {
-    const token = await localStorage.getItem('token')
-    const user = await axios({
-      method:'PATCH',
-      url:'http://localhost:3000/job/' + this.props.match.params.id,
-      data:qs.stringify(dataRegister),
-      headers:{
-        'content-type': 'application/x-www-form-urlencoded',
-        'authorization': 'Bearer '+ String(token)
-      }
-    })
-    return user.data
-  }
-
-
   render() {
     
     return(
@@ -100,7 +90,14 @@ export default class AddJob extends Component {
           <UpdateJobComponent submitJob={this.submitJob}
                           jobData={this.state.jobData}
                           categoriesOption={this.state.categoriesOption}/>
-      //TODO redirect to detail job after 
     )
   }
+} 
+const mapStateToProps = state => {
+  return {
+    jobs: state.jobs,
+    user: state.user
+  }
 }
+
+export default connect(mapStateToProps)(UpdateJob)

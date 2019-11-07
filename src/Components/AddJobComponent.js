@@ -1,6 +1,7 @@
 import React from 'react'
 import {Form, FormGroup, Label, Input, Button, Card} from 'reactstrap'
 
+import {connect} from 'react-redux'
 
 
 function AddJobComponent (props) {
@@ -34,10 +35,13 @@ function AddJobComponent (props) {
           <Input type="text" name="jobLocation" id="jobLocation" placeholder="Jakarta" />
         </FormGroup>
 
-        <FormGroup>
-          <Label for="companyId">Company ID</Label>
-          <Input type="text" name="companyID" id="companyId" placeholder="company ID" />
-        </FormGroup>
+        <Label for="company">Company</Label>
+          <Input type="select" name="companyID" id="company" 
+                >
+                  {props.companies.data.map((e, key) => {
+                  return <option key={key} value={e.id}
+                  >{e.name}</option>})}
+          </Input>
 
         <Button type="submit">Submit</Button>
       </Form>
@@ -45,4 +49,10 @@ function AddJobComponent (props) {
   )
 }
 
-export default (AddJobComponent)
+const mapStateToProps = state => {
+  return {
+    companies: state.companies
+  }
+}
+
+export default connect(mapStateToProps)(AddJobComponent)

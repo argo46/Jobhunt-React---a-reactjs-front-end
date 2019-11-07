@@ -19,8 +19,8 @@ function AddCompanyComponent (props) {
         </FormGroup>
 
         <FormGroup>
-          <Label for="companyDeskription">Company Description</Label>
-          <Input type="textarea" name="companyDescrioption" id="companyDescription" />
+          <Label for="companyDescription">Company Description</Label>
+          <Input type="textarea" name="companyDescription" id="companyDescription" />
         </FormGroup>
 
         <FormGroup>

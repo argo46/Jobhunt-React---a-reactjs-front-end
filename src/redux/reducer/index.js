@@ -1,11 +1,13 @@
 import {combineReducers} from 'redux'
 
 import jobs from './jobs'
-import user from "./user";
+import user from './user';
+import companies from './company'
 
 const appReducer = combineReducers({
   jobs,
-  user
+  user,
+  companies
 })
 
 export default appReducer

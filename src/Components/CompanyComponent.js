@@ -12,12 +12,12 @@ function JobContents (props) {
       <Link to="/company/new"><Button>Add Company</Button></Link>  
       </Row>
       <Row className='justiy-content-md-center list-group' style={{padding:'0', margin: '0'}}>
-        {props.state.isLoading&&(
+        {props.isLoading&&(
           <p>Loading...</p>
         )}
-        {!props.state.isLoading&&
+        {!props.isLoading&&
           <React.Fragment>
-            {props.state.data.map((v) => (
+            {props.data.map((v) => (
               <div key={v.id} className='list-group-item'>
               <Row className='row col-md-12'>
                 <div className='col-md-3'><img src={v.logo} alt='Company Logo' style={{display:'block', maxWidth: '110px'}}/></div>

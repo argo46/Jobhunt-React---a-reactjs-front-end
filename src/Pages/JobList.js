@@ -12,8 +12,7 @@ import DetailJobComponent from '../Components/DetailJobComponent'
 
 
 import {connect} from 'react-redux'
-
-import {getJobs} from '../redux/action/jobs'
+import {getJobs, deleteJob} from '../redux/action/jobs'
 
 
 
@@ -74,21 +73,23 @@ class JobList extends Component {
 
 
   deleteJob = async (id) => {
-    const token = await localStorage.getItem('token')
-    await axios({
-      method:'DELETE',
-      url:'http://localhost:3000/job/' + id,
-      headers:{
-        'content-type': 'application/x-www-form-urlencoded',
-        'authorization': 'Bearer '+ String(token)
-      }})
-      .then(data => {
-        console.log(data)
-        this.updateData()
-      })
-      .catch(err => {
-        console.log(err)
-      }) 
+    const token = this.props.user.token
+    this.props.dispatch(deleteJob(id, token))
+    // const token = await localStorage.getItem('token')
+    // await axios({
+    //   method:'DELETE',
+    //   url:'http://localhost:3000/job/' + id,
+    //   headers:{
+    //     'content-type': 'application/x-www-form-urlencoded',
+    //     'authorization': 'Bearer '+ String(token)
+    //   }})
+    //   .then(data => {
+    //     console.log(data)
+    //     this.updateData()
+    //   })
+    //   .catch(err => {
+    //     console.log(err)
+    //   }) 
   }
 
   
@@ -167,9 +168,8 @@ class JobList extends Component {
                               query={this.state.query}
                               setQueryState={this.setQueryState}/>
           </div>
-          {(!this.props.jobs.isLoading) && !this.props.jobs.isError ? 
+          {!this.props.jobs.isLoading && !this.props.jobs.isError ? 
           <div style={{display:'flex', flexDirection:'column'}}>
-            {console.log('sdfsd'+this.props.jobs.isLoading)}
               <Job data={this.props.jobs.data}
               isEdit={this.props.isEdit}
               user={this.state.user}
@@ -193,7 +193,8 @@ class JobList extends Component {
 
 const mapStateToProps = state => {
   return {
-    jobs: state.jobs
+    jobs: state.jobs,
+    user: state.user
   }
 }
 

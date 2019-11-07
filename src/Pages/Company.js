@@ -5,7 +5,10 @@ import qs from 'qs'
 
 import CompanyComponent from '../Components/CompanyComponent'
 
-export default class Company extends Component {
+import {connect} from 'react-redux'
+import {getCompanies} from '../redux/action/company'
+
+class Company extends Component {
   constructor(props){
     super(props)
     this.state={
@@ -15,19 +18,19 @@ export default class Company extends Component {
   }
 
   componentDidMount(){
-    this.updateData()
+    this.getAllCompanies()
   }
 
   updateData = () => {
     this.getAllCompanies()
-    .then(data => {
-      console.log(data)
-      this.setState({data,
-                    isLoading: false})
-    })
-    .catch(err=>{
-      console.log(err)
-    })
+    // .then(data => {
+    //   console.log(data)
+    //   this.setState({data,
+    //                 isLoading: false})
+    // })
+    // .catch(err=>{
+    //   console.log(err)
+    // })
   }
 
   deleteCompany = (id) => {
@@ -53,18 +56,34 @@ export default class Company extends Component {
   }
 
   getAllCompanies = async () => {
-    const user = await axios({
-      method:'GET',
-      url:'http://localhost:3000/company/',
-    })
-    return user.data
+    // const user = await axios({
+    //   method:'GET',
+    //   url:'http://localhost:3000/company/',
+    // })
+    // return user.data
+    this.props.dispatch(getCompanies())
+    this.setState(this.state)
   }
 
   render() {
     
     return(
+ 
+      !this.props.companies.isLoading ? 
       <CompanyComponent state={this.state}
-                        deleteCompany={this.deleteCompany}/>
+                        isLoading={this.props.companies.isLoading}
+                        deleteCompany={this.deleteCompany}
+                        data={this.props.companies.data}/> :
+                        <h1>Loading...</h1>
+     
     )
   }
 }
+
+
+const mapStateToProps = state => {
+  return {
+    companies: state.companies
+  }
+}
+export default connect(mapStateToProps)(Company)
