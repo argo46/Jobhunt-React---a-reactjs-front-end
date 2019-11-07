@@ -4,7 +4,11 @@ import axios from 'axios'
 
 import LoginComponent from '../Components/LoginComponent'
 
-export default class Login extends Component {
+import {connect} from 'react-redux'
+
+import {login} from '../redux/action/user'
+
+class Login extends Component {
   constructor(props){
     super(props)
     this.state={
@@ -26,20 +30,22 @@ export default class Login extends Component {
       password: event.target.password.value
     }
 
-    this.login(dataLogin)
-      .then(data => {
-        this.setState({token: data.token, user: data.result.name, redirect: true})
-        localStorage.setItem('user_name', data.result.name)
-        localStorage.setItem('user_id', data.result.id)
-        localStorage.setItem('token', data.token)
-        this.props.setUserState(data.result.name)
-        console.log(data)
-        console.log(this.props)
-      })
-      .catch(err => {
-        this.setState({isError: true, errorObject: err.response.data})
-        console.log(err.response.data)
-      })
+    this.props.dispatch(login(dataLogin))
+
+    // this.login(dataLogin)
+    //   .then(data => {
+    //     this.setState({token: data.token, user: data.result.name, redirect: true})
+    //     localStorage.setItem('user_name', data.result.name)
+    //     localStorage.setItem('user_id', data.result.id)
+    //     localStorage.setItem('token', data.token)
+    //     this.props.setUserState(data.result.name)
+    //     console.log(data)
+    //     console.log(this.props)
+    //   })
+    //   .catch(err => {
+    //     this.setState({isError: true, errorObject: err.response.data})
+    //     console.log(err.response.data)
+    //   })
   }
 
   login = async (dataLogin) => {
@@ -48,12 +54,21 @@ export default class Login extends Component {
   }
 
   render(){
+    console.log(this.props);
     
     return(
-      this.state.user !=='' ? <Redirect to="/" /> : <LoginComponent 
+      this.props.user.isLogin? <Redirect to="/" /> : <LoginComponent 
                                   onSubmit={this.onSubmit}
                                   isError={this.state.isError}
                                   errorMessage={this.state.errorMessage}/>                   
     )
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    user: state.user
+  }
+}
+
+export default connect(mapStateToProps)(Login)

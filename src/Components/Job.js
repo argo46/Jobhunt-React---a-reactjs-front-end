@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
-import {Row, ButtonDropdown ,DropdownToggle, DropdownMenu, DropdownItem} from 'reactstrap'
 import {Link} from 'react-router-dom'
 import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles'
-import {Card, CardActions, CardContent, Button, Typography } from '@material-ui/core/'
+import {Card, CardActions, CardContent, Button, Typography, IconButton } from '@material-ui/core/'
+import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 
 import {connect} from 'react-redux'
 
@@ -33,28 +34,38 @@ const useStyles = {
 class Job extends Component {
   constructor(props){
     super(props)
+    console.log(this.props.data)
     this.state={
       dropdownOpen: false,
       cardSelected: '',
     }
+    if(this.props.data.result.length > 0) {
+      this.setState({cardSelected: this.props.data.result[0].id})
+    }
   }
 
   cardStyle = (id) => {
-    if (id == this.state.cardSelected) {
-      const style = {
-        // transitionDuration: '1s',
-        transition: 'width 1s',
-        width: '730px',
-        
-      }
-      return style
-    } else {
-      const style = {
-        maxWidth: '700px',
-        transition: 'width 1s',
-        backgroundColor: 'white'
-      }
-      return style
+    console.log()
+    if(id){
+      if (id == this.state.cardSelected) {
+        const style = {
+          // transitionDuration: '1s',
+          transition: 'width 1s',
+          alignSelf:'center',
+          width: '98%',
+          minWidth: '700px',
+          
+        }
+        return style
+      } else {
+        const style = {
+          maxWidth: '90%',
+          minWidth: '700px',
+          transition: 'width 1s',
+          backgroundColor: 'white'
+        }
+        return style
+    }
     }
   }
   
@@ -63,8 +74,9 @@ class Job extends Component {
     this.setState({dropdownOpen: !this.state.dropdownOpen})
   }
 
-  onSelectCard = (id) =>{
+  onSelectCard = (id, i) =>{
     this.setState({cardSelected:id})
+    this.props.setJobIndexSelected(i)
   }
 
   render() { 
@@ -74,15 +86,30 @@ class Job extends Component {
     return (
         <div>
           {
-            this.props.data.result.map((v) => (
-            <Card className={classes.card} key={v.id} onClick={()=> this.onSelectCard(v.id)} style={this.cardStyle(v.id)}>
+            this.props.data.result.map((v, i) => (
+            <Card className={classes.card} key={v.id} onClick={()=> this.onSelectCard(v.id, i)} style={this.cardStyle(v.id)}>
             <CardContent>
               <div style={{display:'flex'}}>
               <img src={v.company_logo} alt='Company Logo' style={{display:'block', maxWidth: '110px', margin: '20px'}}/>
-                <div>
-                <Typography variant="h6">
+                <div style={{display: 'flex', flexDirection: 'column', flexGrow:'1'}}>
+                <div style={{display: 'flex', flexDirection: 'row', alignSelf:'stretch'}}>
+                <Typography variant="h6" style={{marginTop:'auto'}}>
                   {v.name}
                 </Typography>
+                {this.props.isEdit ?
+                <>
+                  <Link to={'/update-job/'+v.id} style={{marginLeft:'auto'}}>
+                  <IconButton>
+                    <EditOutlinedIcon/>
+                  </IconButton>
+                  </Link>
+                  <IconButton style={{color: 'red'}} onClick={() => this.props.deleteJob(v.id)}>
+                    <DeleteOutlineOutlinedIcon/>
+                  </IconButton>
+                </> : <></>
+                }
+                
+                </div>
                 <Typography className={classes.title} color="textSecondary" gutterBottom>
                   {v.company}
                 </Typography>
@@ -91,13 +118,13 @@ class Job extends Component {
                 </Typography>
                 </div>
               </div>
-              <Typography variant="body2" component="p">
+              {/* <Typography variant="body2" component="p">
                 {v.description}
-              </Typography>
+              </Typography> */}
             </CardContent>
-            <CardActions>
+            {/* <CardActions>
               <Button size="small">Learn More</Button>
-            </CardActions>
+            </CardActions> */}
           </Card>
           )) }
         </div>

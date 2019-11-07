@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {Link} from 'react-router-dom'
 import '../App.css'
 
@@ -23,8 +23,10 @@ const Example = (props) => {
     color: 'white',
     textDecoration: 'none'
   }
-  
+
+
   return (
+    
     <div>
       <Navbar style={{backgroundColor: '#0275d8', }} light expand="md">
         <Link to='/' className='nav-bar-brand' style={navLinkStyle}>JobHunt</Link>
@@ -76,7 +78,7 @@ const Example = (props) => {
                 <Link to='#' style={{textDecoration: 'none'}} onClick={props.logout}>Logout</Link>
                 </DropdownItem>
               </DropdownMenu>
-            </UncontrolledDropdown> :<span></span>
+            </UncontrolledDropdown> :<></>
           }
           </Nav>
         </Collapse>

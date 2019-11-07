@@ -15,6 +15,8 @@ import DrawerComponent from './Components/DrawerComponent'
 
 import store from './redux/store.js'
 import {Provider} from 'react-redux'
+import {connect} from 'react-redux'
+
 
 export default class App extends Component {
   constructor(props) {
@@ -44,9 +46,8 @@ export default class App extends Component {
     this.setState({user:user_name})
   }
 
-  logout = async () => {
-    await localStorage.clear()
-    this.setState({user:''})
+  logout = () => {
+    
   }
 
   setUserState = (user) =>{
@@ -69,15 +70,17 @@ export default class App extends Component {
       <div>
         <BrowserRouter>
         <Provider store={store}>
-        {/* {!this.state.homeRedirect ? <></> : <Redirect to="/" />} */}
+        {!this.state.homeRedirect ? <></> : <Redirect to="/" />}
           <div style={{display: 'flex', alignItems: 'stretch', backgroundColor:'transparent'}}>
-            {/* <DrawerComponent/> */}
+            <DrawerComponent logout={this.logout}
+                              toogleIsEdit={this.toogleIsEdit}
+                              isEdit={this.state.isEdit}/>
             <div style={{flexGrow: '1', backgroundColor:'transparent'}}>
               <div>
-            <Navbar user={this.state.user}
+            {/* <Navbar user={this.state.user}
                       logout={this.logout}
                       toogleIsEdit={this.toogleIsEdit}
-                      isEdit={this.state.isEdit}/>
+                      isEdit={this.state.isEdit}/> */}
               </div>
               <div>
               <Switch>
@@ -101,4 +104,11 @@ export default class App extends Component {
       
     )
   }
-}
+} 
+// const mapStateToProps = state => {
+//   return {
+//     user: state.user
+//   }
+// }
+
+// export default connect(mapStateToProps)(App)
