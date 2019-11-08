@@ -37,6 +37,14 @@ const user = (state = initialState, action) => {
           token:'',
           isLogin:false
       }
+    case 'KEEP_LOGIN' :
+      return {
+        isLoading: false,
+        isError: false,
+        username: action.userName,
+        isLogin: true,
+        token: action.token
+      }
     default:
       return state
   }

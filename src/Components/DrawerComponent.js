@@ -135,7 +135,7 @@ const classes = useStyles()
         :<></>}
 
         {props.user.isLogin? 
-        <Button color="secondary" className={classes.button} onClick={()=> props.dispatch(logout())}>
+        <Button color="secondary" className={classes.button} onClick={props.logout}>
           <strong>Log out</strong>
         </Button> 
         : <></>}

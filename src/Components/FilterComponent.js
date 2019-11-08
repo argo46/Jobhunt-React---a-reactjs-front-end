@@ -10,16 +10,20 @@ export default function FilterComponent(props) {
 
   const [chipData, setChipData] = React.useState([])
   const [sortBy, setSortBy] = React.useState({label: 'date updated', value:'date_updated'})
+  const [dropdownState, setDropdownState] = React.useState({company:'',  sort:''})
 
   const handleDelete = chipToDelete => () => {
     setChipData(chips => chips.filter(chip => chip.key !== chipToDelete.key));
     if(chipToDelete.key === 'qcompany'){
+      setDropdownState({...dropdownState, company:''})
       updateState({qcompany:''})
     } else if(chipToDelete.key === 'qname') {
       updateState({qname:''})
     }
   }
-  const onChange = (event) =>{
+
+  const onCompanyFilterChange = (event) =>{
+    setDropdownState({...dropdownState, company:event.target.value})
     let companyArr = props.companyData.filter(companyData => companyData.id === event.target.value)
     let newDataArr = []
     let chipDataTemp = chipData.filter(chipData => chipData.key !== 'qcompany')
@@ -27,14 +31,16 @@ export default function FilterComponent(props) {
     setChipData(chips => [...chipDataTemp,...newDataArr])
     updateState({qcompany:companyArr[0].name})
   }
+
   const onSortChange = (event) => {
+    setDropdownState({...dropdownState, sort:event.target.value})
     let a = {}
     if (event.target.value === 'date_updated'){
       a = {label: 'Newest', value:'date_updated'}
-      updateState({orderby:'date_updated'})
+      updateState({orderby:'date_updated', order:'desc'})
     } else {
       a = {label: 'Job\'s name', value:'name'}
-      updateState({orderby:'name'})
+      updateState({orderby:'name', order:'asc'})
     }
     setSortBy(sortBy => a)
   }
@@ -75,8 +81,8 @@ export default function FilterComponent(props) {
         <InputLabel htmlFor="age-native-simple">Company</InputLabel>
         <Select
           native
-          value=''
-          onChange={onChange}
+          value={dropdownState.company}
+          onChange={onCompanyFilterChange}
           inputProps={{
             name: 'age',
             id: 'age-native-simple',
@@ -92,7 +98,7 @@ export default function FilterComponent(props) {
         <InputLabel htmlFor="age-native-simple">Sort by</InputLabel>
         <Select
           native
-          value=''
+          value={dropdownState.sort}
           onChange={onSortChange}
           inputProps={{
             name: 'age',

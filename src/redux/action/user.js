@@ -7,6 +7,14 @@ export const login =  (dataLogin) => {
   }
 }
 
+export const keepLogin = (userName, token) => {
+  return {
+    type: 'KEEP_LOGIN',
+    userName,
+    token,
+  }
+}
+
 export const logout =  () => {
   return {
     type: 'LOGOUT'

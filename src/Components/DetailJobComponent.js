@@ -10,14 +10,16 @@ const useStyles = makeStyles(theme => ({
     position: 'fixed',
     padding: theme.spacing(3, 2),
     height: '100%',
-    width: '400px',
-    display:'flex'
+    width: 'auto',
+    display:'flex',
+    overflow: 'auto'
   },
   container: {
     display: 'flex',
     flexDirection: "column",
     flexGrow:1,
-    padding:'10px'
+    padding:'10px',
+    
   }
 }))
 

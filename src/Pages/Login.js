@@ -12,12 +12,7 @@ class Login extends Component {
   constructor(props){
     super(props)
     this.state={
-      user:'',
-      userData:{},
-      token:'',
-      isError:false,
-      errorMessage: '',
-      isLoading:'true'
+      isDone: false,
     }
   }
 
@@ -29,7 +24,6 @@ class Login extends Component {
       email: event.target.email.value,
       password: event.target.password.value
     }
-
     this.props.dispatch(login(dataLogin))
 
     // this.login(dataLogin)
@@ -48,16 +42,16 @@ class Login extends Component {
     //   })
   }
 
-  login = async (dataLogin) => {
-    const user = await axios.post('http://localhost:3000/user/login', dataLogin ,{'Content-Type': 'application/x-www-form-urlencoded'})
-    return user.data
-  }
-
   render(){
     console.log(this.props);
+    if(this.props.user.isLogin) {
+      localStorage.setItem('user_name', this.props.user.username)
+      localStorage.setItem('token', this.props.user.token)
+      this.setState({isDone:true})
+    }
     
     return(
-      this.props.user.isLogin? <Redirect to="/" /> : <LoginComponent 
+      this.state.isDone? <Redirect to="/" /> : <LoginComponent 
                                   onSubmit={this.onSubmit}
                                   isError={this.state.isError}
                                   errorMessage={this.state.errorMessage}/>                   

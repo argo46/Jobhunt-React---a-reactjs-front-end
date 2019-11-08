@@ -28,8 +28,6 @@ const useStyles = {
   }
 }
 
-// const ReactCSSTransitionGroup = require('react-addons-css-transition-group');
-
 
 class Job extends Component {
   constructor(props){
@@ -60,7 +58,7 @@ class Job extends Component {
       } else {
         const style = {
           maxWidth: '90%',
-          minWidth: '700px',
+          // minWidth: '700px',
           transition: 'width 1s',
           backgroundColor: 'white'
         }
@@ -84,13 +82,17 @@ class Job extends Component {
    
     
     return (
-        <div>
+        <div style={{display:'flex', flexDirection:'column'}}>
+          <Typography className={classes.pos} style={{marginTop:'auto', marginLeft: '15px', marginBottom:'0px'}}>
+            <strong style={{color:"#3f51b5"}}>{this.props.data.total_result > 0 ? this.props.data.total_result : <>0</>}</strong>
+            {this.props.data.total_result > 1 ? <> job's</> : <> job</>} found.
+          </Typography>
           {
             this.props.data.result.map((v, i) => (
             <Card className={classes.card} key={v.id} onClick={()=> this.onSelectCard(v.id, i)} style={this.cardStyle(v.id)}>
             <CardContent>
               <div style={{display:'flex'}}>
-              <img src={v.company_logo} alt='Company Logo' style={{display:'block', maxWidth: '110px', margin: '20px'}}/>
+              <img src={v.company_logo} alt='Company Logo' style={{display:'block', maxWidth: '110px', margin: '20px', height:'auto'}}/>
                 <div style={{display: 'flex', flexDirection: 'column', flexGrow:'1'}}>
                 <div style={{display: 'flex', flexDirection: 'row', alignSelf:'stretch'}}>
                 <Typography variant="h6" style={{marginTop:'auto'}}>
@@ -115,6 +117,9 @@ class Job extends Component {
                 </Typography>
                 <Typography className={classes.pos} color="textSecondary">
                   {v.location} | {v.category}
+                </Typography>
+                <Typography className={classes.pos} style={{marginLeft:'auto', fontSize:'0.8rem'}}>
+                  {(new Date(v.date_updated) + (new Date(v.date_updated).getTimezoneOffset()/60)).slice(3,-36)}
                 </Typography>
                 </div>
               </div>
@@ -165,9 +170,6 @@ Job.propTypes = {
   classes: PropTypes.object.isRequired,
 }
 
-const mapStateToProps = state => ({
-  jobs: state.jobs
-})
 export default withStyles(useStyles)(Job)
 
 // const editButtonStyle = {

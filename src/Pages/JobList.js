@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import queryString from 'querystring'
 import axios from 'axios'
-import {Row, Container} from 'reactstrap'
+import {Row, } from 'reactstrap'
 
 import SearchBar from '../Components/SearchBar'
 import SearchBarMaterial from '../Components/SearchBarMaterial'
@@ -9,6 +9,9 @@ import FilterComponent from '../Components/FilterComponent'
 import Job from '../Components/Job'
 import Pagination from '../Components/Pagination'
 import DetailJobComponent from '../Components/DetailJobComponent'
+import {Container, Grid } from '@material-ui/core/'
+import ConfirmationDialog from '../Components/ConfirmationDialog'
+
 
 
 import {connect} from 'react-redux'
@@ -25,6 +28,8 @@ class JobList extends Component {
       companyData: [],
       jobIndexSelected:0,
       isEdit:false,
+      isDialogOpen:false,
+      idToDelete:''
     }
   }
 
@@ -92,6 +97,15 @@ class JobList extends Component {
     //   }) 
   }
 
+  showConfirmationDialog = (id) => {
+    this.setState({isDialogOpen:true, idToDelete: id})
+  }
+
+
+  onDialogOnClick = () => {
+    this.deleteJob(this.state.idToDelete)
+    this.setState({isDialogOpen:false})
+  }
   
   doSearch = () => {
     this.getData()
@@ -105,6 +119,7 @@ class JobList extends Component {
   }
 
   paginationButtonPressed = (url) => {
+    //slice the base url because they already defined in action redux
     this.getData(url.slice(32,url.length))
     
   }
@@ -161,20 +176,26 @@ class JobList extends Component {
           
       //   </Row>
       // </Container>
-      <div style={{display: 'flex', width:'100hv'}}>
-        <div style={{margin: '20px', maxWidth:'90%', display:'flex', flexDirection:'column', alignItems: 'center',}}>
-          <div style={{margin: '0 30px', display:'flex', flexDirection:'column', width: '80%'}}>
+      // <div style={{display: 'flex', width:'100hv'}}>
+        // <div style={{margin: '20px', maxWidth:'90%', display:'flex', flexDirection:'column', alignItems: 'center',}}>
+          // <div style={{margin: '0 30px', display:'flex', flexDirection:'column', width: '80%'}}>
+          <Grid container spacing={3} style={{marginLeft: '18px'}}>
+            <Grid item xs={8}>
             <FilterComponent companyData={this.state.companyData}
                               query={this.state.query}
                               setQueryState={this.setQueryState}/>
-          </div>
+            <ConfirmationDialog open={this.state.isDialogOpen}
+                                label={"Confirmation"}
+                                description={"Are you sure want to delete this Job?"}
+                                yesOnClick={this.onDialogOnClick}/>
+         {/* </div> */}
           {!this.props.jobs.isLoading && !this.props.jobs.isError ? 
           <div style={{display:'flex', flexDirection:'column'}}>
               <Job data={this.props.jobs.data}
               isEdit={this.props.isEdit}
               user={this.state.user}
               doSort={this.doSort}
-              deleteJob={this.deleteJob}
+              deleteJob={this.showConfirmationDialog}
               setJobIndexSelected={this.setJobIndexSelected}
               />
             <Pagination prev={this.props.jobs.data.prev_page}
@@ -182,11 +203,16 @@ class JobList extends Component {
                         paginationButtonPressed={this.paginationButtonPressed} />
           </div>
             : <h1>Loading...</h1>}
-        </div>
+          </Grid>
+          <Grid item xs={4}>
+         {/* </div> */}
         <div style={{display:'flex', marginLeft:'auto', minWidth:'400px', width:'100%'}}>
           <DetailJobComponent jobIndexSelected={this.state.jobIndexSelected}/>
         </div>
-      </div>
+        </Grid>
+        </Grid>
+      //  {/* </div> */}
+      
     )
   }
 } 

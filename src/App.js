@@ -15,24 +15,18 @@ import DrawerComponent from './Components/DrawerComponent'
 
 import store from './redux/store.js'
 import {Provider} from 'react-redux'
-import {connect} from 'react-redux'
+
+import {keepLogin, logout} from './redux/action/user'
 
 
 export default class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      data:{},
-      next:'',
-      prev:'',
       logo:'',
-      user: '',
-      token: '',
       homeRedirect:false,
       isEdit: false,
-      query:{qname:'', qcompany:'', orderby:'date_updated', order:'asc'},
       isLoading: true,
-      page:'http://localhost:3000/job/jobs/?'
     }
   }
 
@@ -40,14 +34,17 @@ export default class App extends Component {
     this.setState({homeRedirect:false})
   }
 
-  componentDidMount(){
-    let user_name = localStorage.getItem('user_name')
-    if (!user_name) {user_name = 'user'}
-    this.setState({user:user_name})
+  async componentDidMount(){
+    let user_name = await  localStorage.getItem('user_name')
+    let token = await  localStorage.getItem('token')
+    if(user_name) {
+      store.dispatch(keepLogin(user_name, token))
+    }
   }
 
   logout = () => {
-    
+    localStorage.clear()
+    store.dispatch(logout())
   }
 
   setUserState = (user) =>{
