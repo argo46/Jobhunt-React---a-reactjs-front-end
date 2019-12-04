@@ -33,9 +33,11 @@ class UpdateJob extends Component {
    }
     console.log(dataRegister)
     this.props.dispatch(updateJob())
-    if(!this.jobs.isLoading && !this.jobs.isError){
+    if(!this.props.jobs.isLoading && !this.props.jobs.isError){
       this.setState({done:true})
     }
+
+    // TODO : ERRORR FIX NOW
     // this.updateJob(dataRegister)
     //   .then(data => {
     //       console.log(data)

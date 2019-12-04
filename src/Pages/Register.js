@@ -4,13 +4,15 @@ import axios from 'axios'
 
 import RegisterComponent from '../Components/RegisterComponent'
 
-export default class Register extends Component {
+import {connect} from 'react-redux'
+
+import {login} from '../redux/action/user'
+
+class Register extends Component {
   constructor(props){
     super(props)
     this.state={
-      user:'',
-      userData:{},
-      token:'',
+      isDone:false,
       isLoading:'true'
     }
   }
@@ -50,32 +52,28 @@ export default class Register extends Component {
   }
 
   doLogin = (dataLogin) => {
-    this.login(dataLogin)
-      .then(data => {
-
-        this.setState({token: data.token, user: data.result.name, redirect: true})
-        this.props.setUserState(data.result.name)
-        console.log(data)
-        console.log(this.props)
-        localStorage.setItem('user_name', data.result.name)
-        localStorage.setItem('user_id', data.result.id)
-        localStorage.setItem('token', data.token)
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    this.props.dispatch(login(dataLogin))
   }
 
-  login = async (dataLogin) => {
-    const user = await axios.post('http://localhost:3000/user/login', dataLogin ,{'Content-Type': 'application/x-www-form-urlencoded'})
-    return user.data
-  }
+  
 
   render(){
-    
+    if(this.props.user.isLogin) {
+      localStorage.setItem('user_name', this.props.user.username)
+      localStorage.setItem('token', this.props.user.token)
+      this.setState({isDone:true})
+    }
     return(
-      this.state.user !=='' ? <Redirect to="/" /> : <RegisterComponent 
+      this.props.user.isLogin? <Redirect to="/" /> : <RegisterComponent 
                                   onSubmit={this.onSubmit}/>             
     )
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    user: state.user
+  }
+}
+
+export default connect(mapStateToProps)(Register)
