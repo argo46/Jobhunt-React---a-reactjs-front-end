@@ -6,7 +6,7 @@ import RegisterComponent from "../Components/RegisterComponent";
 
 import { connect } from "react-redux";
 
-import { login } from "../redux/action/user";
+import { login, register } from "../redux/action/user";
 
 class Register extends Component {
   constructor(props) {
@@ -30,7 +30,8 @@ class Register extends Component {
       password: event.target.password.value
     };
 
-    this.register(dataRegister)
+    this.props
+      .dispatch(register(dataRegister))
       .then(data => {
         console.log(data);
         const dataLogin = {
@@ -43,15 +44,6 @@ class Register extends Component {
       .catch(err => {
         console.log(err);
       });
-  };
-
-  register = async dataRegister => {
-    const user = await axios.post(
-      "http://localhost:3000/user/signup",
-      dataRegister,
-      { "Content-Type": "application/x-www-form-urlencoded" }
-    );
-    return user.data;
   };
 
   doLogin = dataLogin => {

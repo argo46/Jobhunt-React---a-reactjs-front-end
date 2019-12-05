@@ -28,6 +28,23 @@ const user = (state = initialState, action) => {
         token: action.payload.data.token,
         isLogin: true
       };
+    case "REGISTER_PENDING":
+      return {
+        ...state,
+        isLoading: true
+      };
+    case "REGISTER_REJECTED":
+      return {
+        ...state,
+        isLoading: false,
+        isError: true
+      };
+    case "REGISTER_FULFILLED":
+      return {
+        ...state,
+        isLoading: false,
+        isError: false
+      };
     case "LOGOUT":
       return {
         ...state,
