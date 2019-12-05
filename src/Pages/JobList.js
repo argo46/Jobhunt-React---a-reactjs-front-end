@@ -47,15 +47,6 @@ class JobList extends Component {
   }
 
   getData = query => {
-    // if(url === undefined ){
-    //   const jobs = await axios.get(this.state.page + queryString.stringify(this.state.query))
-    //   console.log(`get ${this.state.page + queryString.stringify(this.state.query)}`)
-    //   return jobs.data
-    // } else {
-    //   console.log(`get ${url}`)
-    //   const jobs = await axios.get(url)
-    //   return jobs.data
-    // }
     if (query === undefined) {
       this.props.dispatch(getJobs(queryString.stringify(this.state.query)));
       console.log(query);
@@ -77,21 +68,6 @@ class JobList extends Component {
   deleteJob = async id => {
     const token = this.props.user.token;
     this.props.dispatch(deleteJob(id, token));
-    // const token = await localStorage.getItem('token')
-    // await axios({
-    //   method:'DELETE',
-    //   url:'http://localhost:3000/job/' + id,
-    //   headers:{
-    //     'content-type': 'application/x-www-form-urlencoded',
-    //     'authorization': 'Bearer '+ String(token)
-    //   }})
-    //   .then(data => {
-    //     console.log(data)
-    //     this.updateData()
-    //   })
-    //   .catch(err => {
-    //     console.log(err)
-    //   })
   };
 
   showConfirmationDialog = id => {
@@ -161,20 +137,6 @@ class JobList extends Component {
   };
   render() {
     return (
-      // <Container className="d-flex justify-content-center" style={{margin:'20px'}}>
-      //   <Row className=' list-group' style={{padding:'0', margin: '0', maxWidth: '700px'}}>
-      //     <SearchBar doSearch={this.doSearch}
-      //           onChangeCompany={this.onChangeCompany}
-      //           onChangeName={this.onChangeName}
-      //           qcompany={this.state.query.qcompany}
-      //           qname={this.state.query.qname}
-      //           onKeyDownSearch={this.onKeyDownSearch} />
-
-      //   </Row>
-      // </Container>
-      // <div style={{display: 'flex', width:'100hv'}}>
-      // <div style={{margin: '20px', maxWidth:'90%', display:'flex', flexDirection:'column', alignItems: 'center',}}>
-      // <div style={{margin: '0 30px', display:'flex', flexDirection:'column', width: '80%'}}>
       <Grid container spacing={3} style={{ marginLeft: "18px" }}>
         <Grid item xs={8}>
           <FilterComponent
