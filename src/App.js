@@ -66,7 +66,7 @@ export default class App extends Component {
         style={{
           height: "100%",
           minHeight: "400px",
-          display: "flex",
+          // display: "flex",
           flex: 1
         }}
       >
@@ -76,13 +76,10 @@ export default class App extends Component {
             <div
               style={{
                 display: "flex",
-                flex: 1,
-                alignItems: "stretch",
-                height: "100%",
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: "auto",
-                marginBottom: "auto"
+                flex: 1
+                // alignItems: "stretch",
+                // height: "100%"
+                // justifyContent: "center"
               }}
             >
               <DrawerComponent
