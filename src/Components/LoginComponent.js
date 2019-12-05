@@ -86,7 +86,7 @@ export default function LoginComponent(props) {
               //   Wrong Email or Password
               // </Alert>
               props.isLoading ? (
-                <Spinner style={{ margin: 10 }} />
+                <Spinner style={{ margin: 10 }} color="primary" />
               ) : (
                 <></>
               )}
