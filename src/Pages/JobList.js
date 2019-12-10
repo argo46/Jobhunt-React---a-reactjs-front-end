@@ -11,6 +11,7 @@ import Pagination from "../Components/Pagination";
 import DetailJobComponent from "../Components/DetailJobComponent";
 import { Container, Grid } from "@material-ui/core/";
 import ConfirmationDialog from "../Components/ConfirmationDialog";
+import { config } from "../config/config";
 
 import { connect } from "react-redux";
 import { getJobs, deleteJob } from "../redux/action/jobs";
@@ -60,7 +61,7 @@ class JobList extends Component {
   getCompanies = async id => {
     const user = await axios({
       method: "GET",
-      url: "http://localhost:3000/company"
+      url: config.BASE_URL + "/company"
     });
     return user.data;
   };
@@ -151,7 +152,6 @@ class JobList extends Component {
             description={"Are you sure want to delete this Job?"}
             yesOnClick={this.onDialogOnClick}
           />
-          {/* </div> */}
           {!this.props.jobs.isLoading && !this.props.jobs.isError ? (
             <div style={{ display: "flex", flexDirection: "column" }}>
               <Job

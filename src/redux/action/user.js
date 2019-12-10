@@ -1,9 +1,10 @@
 import axios from "axios";
+import { config } from "../../config/config";
 
 export const login = dataLogin => {
   return {
     type: "LOGIN",
-    payload: axios.post("http://localhost:3000/user/login", dataLogin, {
+    payload: axios.post(config.BASE_URL + "/user/login", dataLogin, {
       "Content-Type": "application/x-www-form-urlencoded"
     })
   };
@@ -12,7 +13,7 @@ export const login = dataLogin => {
 export const register = dataRegister => {
   return {
     type: "REGISTER",
-    payload: axios.post("http://localhost:3000/user/signup", dataRegister, {
+    payload: axios.post(config.BASE_URL + "/user/signup", dataRegister, {
       "Content-Type": "application/x-www-form-urlencoded"
     })
   };
