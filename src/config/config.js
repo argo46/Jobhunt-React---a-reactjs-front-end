@@ -1,3 +1,3 @@
 export const config = {
-  BASE_URL: "http://3.94.208.239:8001"
+  BASE_URL: "https://jobhuntapp.adityaargo.site"
 };
