@@ -16,6 +16,8 @@ import DrawerComponent from "./Components/DrawerComponent";
 import store from "./redux/store.js";
 import { Provider } from "react-redux";
 
+import { config } from "./config/config";
+
 import { keepLogin, logout } from "./redux/action/user";
 
 export default class App extends Component {
@@ -52,7 +54,8 @@ export default class App extends Component {
 
   toogleIsEdit = () => {
     const isEditvalue = !this.state.isEdit;
-    if (window.location.href !== "http://localhost:8000/") {
+    if (window.location.href !== config.BASE_URL) {
+      this.setState({ isEdit: isEditvalue });
       this.setState({ homeRedirect: true });
     } else {
       this.setState({ isEdit: isEditvalue });
