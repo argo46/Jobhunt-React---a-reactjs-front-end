@@ -51,5 +51,7 @@ $ yarn start
 ---
 
 ## Screenshots
+![header](https://raw.githubusercontent.com/argo46/Jobhunt-React---a-reactjs-front-end/master/Screenshots/Web%20Login.PNG)
 
+![header](https://raw.githubusercontent.com/argo46/Jobhunt-React---a-reactjs-front-end/master/Screenshots/Web%20Main%20Screen.PNG)
 ---
